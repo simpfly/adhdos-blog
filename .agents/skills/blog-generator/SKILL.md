@@ -99,8 +99,14 @@ graph TD
 
 为了确保博客质量和对神经多样性读者的友好度，所有新生成的文章在起草时应严格遵循以下标准化结构：
 
-1. **Frontmatter 配置**：
-   - 必须包含 `title`、`description`、`pubDate`、`heroImage` 和 `tags`。中英文版本的 Frontmatter 键值结构必须完全镜像对齐。如果标题/描述包含中文标点符号，必须用单引号 `'` 包裹。
+1. **Frontmatter 配置与 GEO 标题优化**：
+   - 必须包含 `title`、`description`、`pubDate`、`heroImage` 和 `tags`。中英文版本的 Frontmatter 键值（Key）结构必须一致。如果标题/描述包含中文标点符号，必须用单引号 `'` 包裹。
+   - **双语标题 GEO 命名规范 (非强制镜像对照)**：中英文标题的内容与命名思路**不需要镜像一致**，应针对各自语言市场与生成式引擎（GEO）的算法特征进行独立综合优化，使其更符合 AI 搜索意图。
+   - **GEO 标题设计四大要素**：
+     * **问答拟真 (Intent Match)**：标题应设计成能够直接回答用户常见提问 Prompt 的句式（如 `How to Relieve...` / `如何自我缓解...`），提升 LLM 语义检索匹配率。
+     * **实体高密度 (Entity Density)**：嵌入高关联专有名词（如 `ADHD Paralysis` / `执行功能障碍`），提高在 AI 知识图谱中的检索比重。
+     * **结构化暗示 (Structural Signpost)**：在标题中引入数字或清晰步骤（如 `3 Physical Hacks` / `3 个物理自救技巧`），使 LLM 易于提取页面作为总结源。
+     * **循证可信度 (E-E-A-T)**：包含 `Science-Backed` / `科学实证` 等信任暗示，迎合 AI 搜索引擎（如 Google SGE / Copilot）对可信度页面的偏好。
 
 2. **Quick Summary (快速摘要) 框**：
    - 在正文最开头，必须以一个淡灰色圆角边框的 `div` 结构包裹：
