@@ -1,0 +1,105 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ===== 设计 token（与主站 adhdos.app 对齐）===== */
+@theme {
+  --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  --font-serif: "Cormorant Garamond", "Noto Serif SC", Georgia, serif;
+
+  /* 主站 accent */
+  --color-violet: #a78bfa;
+  --color-violet-dark: #8b5cf6;
+  --color-ink: #18181b;
+  --color-paper: #fafafa;
+
+  --color-brand-50: #f6fff0;
+  --color-brand-100: #e8fecf;
+  --color-brand-200: #d2fc9a;
+  --color-brand-300: #b9f863;
+  --color-brand-400: #abfe2c; /* 主色 */
+  --color-brand-500: #8fdf13;
+  --color-brand-600: #71bd0a;
+  --color-brand-700: #56910b;
+  --color-brand-800: #45710f;
+  --color-brand-900: #3a5e12;
+
+  --color-violet-soft: #a78bfa;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+    /* 主站同款淡紫双光晕 */
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(167, 139, 250, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(167, 139, 250, 0.15), transparent 25%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: var(--color-violet);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+  /* 主站同款玻璃态卡片 */
+  .lens-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 2rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+  }
+
+  .lens-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px -8px rgba(167, 139, 250, 0.25);
+  }
+
+  .prose-adhd :where(h2):not(:where([class~="not-prose"] *)) {
+    color: var(--color-ink);
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    scroll-margin-top: 6rem;
+  }
+
+  .prose-adhd :where(a):not(:where([class~="not-prose"] *)) {
+    color: var(--color-violet-dark);
+    text-decoration: none;
+    background-image: linear-gradient(var(--color-violet), var(--color-violet));
+    background-size: 100% 35%;
+    background-repeat: no-repeat;
+    background-position: 0 88%;
+    transition: background-size 0.2s ease;
+  }
+
+  .prose-adhd :where(a):not(:where([class~="not-prose"] *)):hover {
+    background-size: 100% 100%;
+  }
+
+  /* 紧扣主站品牌 */
+  .accent-pill {
+    background: var(--color-violet);
+    color: var(--color-ink);
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Anchor link offset so headings aren't hidden behind the sticky header */
+:target {
+  scroll-margin-top: 6rem;
+}

@@ -1,0 +1,50 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, tags } = post.data;
+---
+<BaseLayout title={`${title} - ADHD OS Blog`} description={description}>
+  <article class="max-w-3xl mx-auto">
+    <header class="mb-12 text-center">
+      <div class="flex justify-center flex-wrap gap-2 mb-6">
+        {tags?.map((tag) => (
+          <span class="px-3 py-1 bg-black/5 text-black text-xs font-bold rounded-full border border-black/5">
+            {tag}
+          </span>
+        ))}
+      </div>
+      <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-[#2D2B35] leading-tight mb-6">
+        {title}
+      </h1>
+      <div class="text-zinc-500 font-medium text-sm flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        <time datetime={pubDate.toISOString()}>
+          {pubDate.toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+      </div>
+    </header>
+    
+    <div class="lens-card p-8 md:p-12 lg:p-16">
+      <div class="prose prose-zinc prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:font-bold prose-a:text-violet-700 hover:prose-a:text-violet-600">
+        <slot />
+      </div>
+    </div>
+    
+    <div class="mt-16 text-center">
+      <a href="/blog" class="inline-flex items-center gap-2 text-zinc-500 hover:text-black font-bold transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        返回所有文章
+      </a>
+    </div>
+  </article>
+</BaseLayout>
