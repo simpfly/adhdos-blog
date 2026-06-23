@@ -16,6 +16,28 @@ const t = useTranslations(lang);
 const isEn = lang === 'en';
 const locale = isEn ? 'en-US' : 'zh-CN';
 const backUrl = isEn ? '/en' : '/';
+
+const getReadingTime = (body: string | undefined, lang: 'zh' | 'en') => {
+  if (!body) return '';
+  const cleanBody = body
+    .replace(/```[\s\S]*?```/g, '') // 去除代码块
+    .replace(/<[^>]*>/g, '')       // 去除 HTML 标签
+    .replace(/[#*`_\-~[\]()]/g, ''); // 去除 Markdown 格式符
+
+  if (lang === 'zh') {
+    const cnChars = (cleanBody.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const enWords = (cleanBody.replace(/[\u4e00-\u9fa5]/g, ' ').match(/\b[a-zA-Z0-9_\-]+\b/g) || []).length;
+    const totalCount = cnChars + enWords;
+    const minutes = Math.max(1, Math.ceil(totalCount / 350));
+    return `${totalCount} 字 · 预计阅读 ${minutes} 分钟`;
+  } else {
+    const totalCount = (cleanBody.match(/\b[a-zA-Z0-9_\-]+\b/g) || []).length;
+    const minutes = Math.max(1, Math.ceil(totalCount / 200));
+    return `${totalCount} words · ${minutes} min read`;
+  }
+};
+
+const readingTimeText = getReadingTime(post.body, lang);
 ---
 <BaseLayout title={`${title} - ADHD OS Blog`} description={description}>
   <article class="max-w-4xl mx-auto">
@@ -31,15 +53,26 @@ const backUrl = isEn ? '/en' : '/';
         <h1 class="text-2xl md:text-4xl font-black tracking-tight text-[#2D2B35] leading-tight mb-5">
           {title}
         </h1>
-        <div class="text-zinc-500 font-medium text-sm flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-          <time datetime={pubDate.toISOString()}>
-            {pubDate.toLocaleDateString(locale, {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </time>
+        <div class="text-zinc-500 font-medium text-sm flex items-center gap-2 flex-wrap">
+          <span class="flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+            <time datetime={pubDate.toISOString()}>
+              {pubDate.toLocaleDateString(locale, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </time>
+          </span>
+          {readingTimeText && (
+            <>
+              <span class="text-zinc-300">|</span>
+              <span class="flex items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <span>{readingTimeText}</span>
+              </span>
+            </>
+          )}
         </div>
       </header>
 
