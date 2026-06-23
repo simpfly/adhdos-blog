@@ -7,7 +7,7 @@ export const defaultLang = 'zh';
 
 export const ui = {
   zh: {
-    'nav.about': '关于 ADHDOS',
+    'nav.about': '关于',
     'nav.pricing': '定价',
     'nav.blog': '博客',
     'nav.download': '下载',
