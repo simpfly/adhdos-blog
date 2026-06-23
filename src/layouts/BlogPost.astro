@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import { useTranslations } from '../i18n/utils';
+import { Image } from 'astro:assets';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const { post, lang } = Astro.props;
-const { title, description, pubDate, tags } = post.data;
+const { title, description, pubDate, tags, heroImage } = post.data;
 
 const t = useTranslations(lang);
 const isEn = lang === 'en';
@@ -17,7 +18,7 @@ const locale = isEn ? 'en-US' : 'zh-CN';
 const backUrl = isEn ? '/en' : '/';
 ---
 <BaseLayout title={`${title} - ADHD OS Blog`} description={description}>
-  <article class="max-w-3xl mx-auto">
+  <article class="max-w-4xl mx-auto">
     <header class="mb-12 text-center">
       <div class="flex justify-center flex-wrap gap-2 mb-6">
         {tags?.map((tag) => (
@@ -41,7 +42,12 @@ const backUrl = isEn ? '/en' : '/';
       </div>
     </header>
     
-    <div class="lens-card p-8 md:p-12 lg:p-16">
+    <div class="lens-card p-10 md:p-16">
+      {heroImage && (
+        <div class="mb-8 md:mb-12 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-black/5 shadow-sm bg-zinc-50">
+          <Image src={heroImage} alt={title} class="w-full h-full object-cover" />
+        </div>
+      )}
       <div class="prose prose-zinc prose-lg max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:font-bold prose-a:text-violet-700 hover:prose-a:text-violet-600">
         <slot />
       </div>

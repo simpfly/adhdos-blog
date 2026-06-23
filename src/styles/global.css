@@ -61,8 +61,8 @@
   }
 
   .lens-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px -8px rgba(167, 139, 250, 0.25);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 24px -5px rgba(0, 0, 0, 0.08);
   }
 
   .prose-adhd :where(h2):not(:where([class~="not-prose"] *)) {
