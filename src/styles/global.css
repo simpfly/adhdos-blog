@@ -97,6 +97,41 @@
     font-size: 0.75rem;
     letter-spacing: 0.02em;
   }
+
+  /* ===== 针对神经多样性（ADHD）读者的深度排版优化 ===== */
+  .prose {
+    letter-spacing: 0.015em;
+  }
+
+  .prose p {
+    line-height: 1.85 !important; /* 拓宽行距，防止视觉跳行 */
+    margin-top: 1.6rem !important;
+    margin-bottom: 1.8rem !important; /* 拓宽段落间距，消除视觉压迫 */
+    color: var(--color-ink) !important;
+  }
+
+  .prose li {
+    line-height: 1.75 !important;
+    margin-top: 0.6rem !important;
+    margin-bottom: 0.6rem !important; /* 扩大列表项垂直空隙，强化可读度 */
+  }
+
+  /* 将无序列表的原点更换为亮紫色，作为强力视觉扫描锚点 */
+  .prose ul > li::marker {
+    color: var(--color-violet-dark) !important;
+  }
+
+  /* 重新打磨引用卡片（Blockquote）：淡紫背景加高对比度左边条，创造视觉休息站 */
+  .prose blockquote {
+    background: rgba(167, 139, 250, 0.05) !important;
+    border-left-color: var(--color-violet-dark) !important;
+    padding: 1.25rem 1.5rem !important;
+    border-radius: 0.75rem;
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+    font-style: normal !important;
+    border-left-width: 4px !important;
+  }
 }
 
 /* Anchor link offset so headings aren't hidden behind the sticky header */
