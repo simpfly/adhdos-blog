@@ -19,30 +19,30 @@ const backUrl = isEn ? '/en' : '/';
 ---
 <BaseLayout title={`${title} - ADHD OS Blog`} description={description}>
   <article class="max-w-4xl mx-auto">
-    <header class="mb-12 text-center">
-      <div class="flex justify-center flex-wrap gap-2 mb-6">
-        {tags?.map((tag) => (
-          <span class="px-3 py-1 bg-black/5 text-black text-xs font-bold rounded-full border border-black/5">
-            {tag}
-          </span>
-        ))}
-      </div>
-      <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-[#2D2B35] leading-tight mb-6">
-        {title}
-      </h1>
-      <div class="text-zinc-500 font-medium text-sm flex items-center justify-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
-        <time datetime={pubDate.toISOString()}>
-          {pubDate.toLocaleDateString(locale, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </time>
-      </div>
-    </header>
-    
     <div class="lens-card p-10 md:p-16">
+      <header class="mb-10 border-b border-black/5 pb-8">
+        <div class="flex flex-wrap gap-2 mb-4">
+          {tags?.map((tag) => (
+            <span class="px-2.5 py-0.5 bg-violet-100 text-violet-800 text-xs font-bold rounded-full border border-violet-200">
+              {tag}
+            </span>
+          ))}
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black tracking-tight text-[#2D2B35] leading-tight mb-5">
+          {title}
+        </h1>
+        <div class="text-zinc-500 font-medium text-sm flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          <time datetime={pubDate.toISOString()}>
+            {pubDate.toLocaleDateString(locale, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </time>
+        </div>
+      </header>
+
       {heroImage && (
         <div class="mb-8 md:mb-12 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-black/5 shadow-sm bg-zinc-50">
           <Image src={heroImage} alt={title} class="w-full h-full object-cover" />
