@@ -6,8 +6,12 @@ interface Props {
 }
 
 const { post } = Astro.props;
+
+const [lang, ...slugParts] = post.id.split('/');
+const slug = slugParts.join('/');
+const href = lang === 'zh' ? `/${slug}/` : `/${lang}/${slug}/`;
 ---
-<a href={`/blog/${post.id}/`} class="lens-card group p-6 md:p-8 flex flex-col min-h-[300px]">
+<a href={href} class="lens-card group p-6 md:p-8 flex flex-col min-h-[300px]">
   <div class="flex-grow">
     <!-- Icon Placeholder -->
     <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center mb-6 transition-colors duration-500 group-hover:bg-violet-300 shadow-sm border border-black/5">

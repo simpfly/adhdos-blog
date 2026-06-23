@@ -8,8 +8,14 @@ const t = useTranslations(lang);
 const pathname = Astro.url.pathname;
 const isEn = lang === 'en';
 
-const zhUrl = isEn ? pathname.replace('/blog/en', '/blog') : pathname;
-const enUrl = isEn ? pathname : pathname.replace('/blog', '/blog/en').replace('//', '/');
+let zhUrl = pathname;
+let enUrl = pathname;
+
+if (isEn) {
+  zhUrl = pathname.replace(/^\/en/, '') || '/';
+} else {
+  enUrl = `/en${pathname === '/' ? '' : pathname}`;
+}
 ---
 <header class="fixed top-0 left-0 w-full z-50 border-b border-black/5 bg-white/70 backdrop-blur-xl">
   <div class="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between max-w-7xl">
@@ -26,7 +32,7 @@ const enUrl = isEn ? pathname : pathname.replace('/blog', '/blog/en').replace('/
 
       <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.about')}</a>
       <a href="https://adhdos.app/product#pricing" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.pricing')}</a>
-      <a href={isEn ? "/blog/en" : "/blog"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.blog')}</a>
+      <a href={isEn ? "/en" : "/"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.blog')}</a>
       <a href="https://flowus.cn/curiosita/share/64846477-cbbc-45a3-97c2-2f7c3a7bef61?code=QRZXP8" target="_blank" rel="noopener noreferrer" class="bg-black text-white text-sm font-bold py-2 px-4 md:px-5 rounded-full hover:bg-zinc-800 transition-colors shadow-lg flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
         <span class="hidden sm:inline">{t('nav.download')}</span>

@@ -14,7 +14,7 @@ const { title, description, pubDate, tags } = post.data;
 const t = useTranslations(lang);
 const isEn = lang === 'en';
 const locale = isEn ? 'en-US' : 'zh-CN';
-const backUrl = isEn ? '/blog/en' : '/blog';
+const backUrl = isEn ? '/en' : '/';
 ---
 <BaseLayout title={`${title} - ADHD OS Blog`} description={description}>
   <article class="max-w-3xl mx-auto">
