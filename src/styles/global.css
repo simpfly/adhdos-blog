@@ -4,7 +4,7 @@
 /* ===== 设计 token（与主站 adhdos.app 对齐）===== */
 @theme {
   --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-  --font-serif: "Cormorant Garamond", Georgia, Cambria, "Times New Roman", Times, "Nimbus Roman No9 L", "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", "Source Han Serif CN", STSong, "AR PL New Sung", "AR PL MITTED Sung", "MS Song", serif;
+  --font-serif: "Cormorant Garamond", Georgia, Cambria, "Times New Roman", Times, "Nimbus Roman No9 L", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", "Source Han Serif CN", "Songti SC", STSong, "AR PL New Sung", "AR PL MITTED Sung", "MS Song", serif;
 
   /* 主站 accent */
   --color-violet: #a78bfa;
@@ -142,4 +142,19 @@
 /* ===== 统一 prose-serif 下所有文本元素的衬线字体，防止粗体、标题等回退到系统黑体 ===== */
 .prose-serif :where(h1, h2, h3, h4, h5, h6, p, li, strong, a, blockquote, td, th, dt, dd, span, time):not(pre, code, pre *, code *, [class*="bg-"], [class*="accent-"]) {
   font-family: var(--font-serif) !important;
+}
+
+/* 统一博客详情页中所有层级标题为衬线体，保持字体对齐 */
+.blog-post-container h1,
+.blog-post-container h2,
+.blog-post-container h3,
+.blog-post-container h4,
+.blog-post-container h5,
+.blog-post-container h6 {
+  font-family: var(--font-serif) !important;
+}
+
+/* 修复标题内超链接被强制变细的问题，强制其继承标题本身的字重比重 */
+.prose :where(h1, h2, h3, h4, h5, h6) a {
+  font-weight: inherit !important;
 }
