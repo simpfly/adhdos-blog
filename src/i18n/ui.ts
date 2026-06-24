@@ -17,6 +17,7 @@ export const ui = {
     'hero.description': '享受分心，自然专注。在这里记录构建 ADHD OS 的过程，分享关于专注力、系统设计与个人成长的故事。',
     'home.all_articles': '所有文章',
     'post.back': '返回所有文章',
+    'post.recommended_reading': '推荐阅读',
   },
   en: {
     'nav.about': 'About',
@@ -29,5 +30,6 @@ export const ui = {
     'hero.description': 'Embrace distraction, focus naturally. Documenting the journey of building ADHD OS, sharing stories about focus, system design, and personal growth.',
     'home.all_articles': 'All Articles',
     'post.back': 'Back to all articles',
+    'post.recommended_reading': 'Recommended Reading',
   },
 } as const;
