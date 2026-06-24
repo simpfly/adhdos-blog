@@ -18,6 +18,8 @@ export const ui = {
     'home.all_articles': '所有文章',
     'post.back': '返回所有文章',
     'post.recommended_reading': '推荐阅读',
+    'surprise.from_article': '出自文章',
+    'surprise.default_tag': '快速问答',
   },
   en: {
     'nav.about': 'About',
@@ -31,5 +33,7 @@ export const ui = {
     'home.all_articles': 'All Articles',
     'post.back': 'Back to all articles',
     'post.recommended_reading': 'Recommended Reading',
+    'surprise.from_article': 'FROM ARTICLE',
+    'surprise.default_tag': 'Q&A',
   },
 } as const;

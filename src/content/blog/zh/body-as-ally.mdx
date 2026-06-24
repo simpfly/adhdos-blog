@@ -6,6 +6,8 @@ heroImage: "../../../assets/blog/body-as-ally.png"
 tags: ["ADHD", "非药物", "运动", "饮食"]
 ---
 
+import FAQSchema from '../../../components/FAQSchema.astro';
+
 <div class="bg-zinc-50/80 border border-black/5 rounded-2xl p-6 mb-10">
   <div class="text-xs font-black text-violet-700 tracking-wider mb-2 flex items-center gap-1.5">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -83,11 +85,17 @@ tags: ["ADHD", "非药物", "运动", "饮食"]
 
 ## 快速问答
 
-### 为什么我一拉伸就觉得心浮气躁，根本安分不下来？
-这太正常了。我们的脑子习惯了超速，一旦强制慢下来，就会产生「无聊戒断反应」。不用强迫自己去冥想或者静坐。你可以一边放着喜欢的播客、音乐，一边跟着比划。给大脑一点背景白噪音，它就没空作妖了。
-
-### 怎么知道自己是动力不足，还是血糖真的崩了？
-看时间。如果你是吃完面条、面包或者甜品 1.5 到 2 小时后，突然像被抽干了一样犯困、心慌，甚至手有点抖，那多半是血糖崩了。下次吃面之前，先啃根黄瓜或者吃个荷包蛋垫一下。
-
-### 生理期前实在不想动怎么办？
-顺着身体来。经期前孕酮变高，体能本就会断崖式下跌。这时候别硬撑着去运动了，躺在床上揉揉捏捏，或者用热水泡个脚就挺好。放过自己，不丢人。
+<FAQSchema questions={[
+  {
+    question: "为什么我一拉伸就觉得心浮气躁，根本安分不下来？",
+    answer: "这太正常了。我们的脑子习惯了超速，一旦强制慢下来，就会产生「无聊戒断反应」。不用强迫自己去冥想或者静坐。你可以一边放着喜欢的播客、音乐，一边跟着比划。给大脑一点背景白噪音，它就没空作妖了。"
+  },
+  {
+    question: "怎么知道自己是动力不足，还是血糖真的崩了？",
+    answer: "看时间。如果你是吃完面条、面包或者甜品 1.5 到 2 小时后，突然像被抽干了一样犯困、心慌，甚至手有点抖，那多半是血糖崩了。下次吃面之前，先啃根黄瓜或者吃个荷包蛋垫一下。"
+  },
+  {
+    question: "生理期前实在不想动怎么办？",
+    answer: "顺着身体来。经期前孕酮变高，体能本就会断崖式下跌。这时候别硬撑着去运动了，躺在床上揉揉捏捏，或者用热水泡个脚就挺好。放过自己，不丢人。"
+  }
+]} />

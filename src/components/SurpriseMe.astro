@@ -1,0 +1,367 @@
+---
+import fs from 'fs';
+import path from 'path';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// 定义 FAQ 对象的 TypeScript 接口
+interface FAQItem {
+  question: string;
+  answer: string;
+  articleTitle: string;
+  articleHref: string;
+  tag: string;
+}
+
+// 解析 Frontmatter 提取 title 和第一个 tag
+function parseFrontmatter(content: string) {
+  const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---/;
+  const match = content.match(frontmatterRegex);
+  let title = '';
+  let tags: string[] = [];
+  
+  if (match) {
+    const fmText = match[1];
+    const titleMatch = fmText.match(/title:\s*["']?([^"'\n]+)["']?/);
+    if (titleMatch) title = titleMatch[1];
+    
+    // 支持 tags: ["A", "B"] 或者 yaml 列表格式
+    const tagsMatch = fmText.match(/tags:\s*\[\s*([^\]]*)\s*\]/);
+    if (tagsMatch) {
+      tags = tagsMatch[1].split(',').map(t => t.replace(/["']/g, '').trim()).filter(Boolean);
+    } else {
+      const tagsListMatch = fmText.match(/tags:([\s\S]*?)(?:\n[a-zA-Z]+:|$)/);
+      if (tagsListMatch) {
+        const lines = tagsListMatch[1].split('\n');
+        lines.forEach(line => {
+          const m = line.match(/^\s*-\s*(.+)/);
+          if (m) tags.push(m[1].replace(/["']/g, '').trim());
+        });
+      }
+    }
+  }
+  return { title, tags };
+}
+
+// 提取 Q&A 数据
+function parseFAQs(content: string, isZh: boolean, slug: string): FAQItem[] {
+  const faqs: FAQItem[] = [];
+  const { title, tags } = parseFrontmatter(content);
+  const tag = tags[0] || t('surprise.default_tag');
+  const href = isZh ? `/${slug}/` : `/${lang}/${slug}/`;
+  
+  // 1. 优先提取 FAQSchema
+  const schemaRegex = /<FAQSchema\s+questions=\{\[\s*([\s\S]*?)\s*\]\}\s*\/>/;
+  const match = content.match(schemaRegex);
+  if (match) {
+    const arrayStr = match[1];
+    const itemRegex = /\{\s*question:\s*(["'])([\s\S]*?)\1,\s*answer:\s*(["'])([\s\S]*?)\3\s*\}/g;
+    let itemMatch;
+    while ((itemMatch = itemRegex.exec(arrayStr)) !== null) {
+      faqs.push({
+        question: itemMatch[2].trim(),
+        answer: itemMatch[4].trim(),
+        articleTitle: title,
+        articleHref: href,
+        tag: tag
+      });
+    }
+  }
+
+  // 2. 如果无 FAQSchema 或者是 Markdown 标题格式
+  if (faqs.length === 0) {
+    const heading = isZh ? '## 快速问答' : '## Quick Q&A';
+    const index = content.indexOf(heading);
+    if (index !== -1) {
+      const section = content.substring(index + heading.length);
+      const nextH2 = section.indexOf('\n## ');
+      const faqText = nextH2 !== -1 ? section.substring(0, nextH2) : section;
+
+      const qaRegex = /###\s+([^\n]+)\n+([\s\S]*?)(?=(?:\n+###\s+)|$)/g;
+      let qaMatch;
+      while ((qaMatch = qaRegex.exec(faqText)) !== null) {
+        const q = qaMatch[1].trim();
+        const a = qaMatch[2].replace(/<[^>]*>/g, '').trim();
+        if (q && a) {
+          faqs.push({
+            question: q,
+            answer: a,
+            articleTitle: title,
+            articleHref: href,
+            tag: tag
+          });
+        }
+      }
+    }
+  }
+
+  return faqs;
+}
+
+// 递归获取目录下所有 md/mdx 文件
+function walkDir(dir: string): string[] {
+  let results: string[] = [];
+  if (!fs.existsSync(dir)) return [];
+  
+  const list = fs.readdirSync(dir);
+  list.forEach((file) => {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat && stat.isDirectory()) {
+      results = results.concat(walkDir(filePath));
+    } else {
+      if (filePath.endsWith('.md') || filePath.endsWith('.mdx')) {
+        results.push(filePath);
+      }
+    }
+  });
+  return results;
+}
+
+// 获取全部问答
+const blogDir = path.join(process.cwd(), 'src/content/blog', lang);
+const files = walkDir(blogDir);
+let allFAQs: FAQItem[] = [];
+
+files.forEach(file => {
+  const content = fs.readFileSync(file, 'utf-8');
+  const filename = path.basename(file);
+  const slug = filename.replace(/\.(md|mdx)$/, '');
+  const faqs = parseFAQs(content, lang === 'zh', slug);
+  allFAQs = allFAQs.concat(faqs);
+});
+
+// 如果没有问答，降级处理避免报错
+if (allFAQs.length === 0) {
+  allFAQs.push({
+    question: lang === 'zh' ? '今天感到注意力无法集中？' : 'Trouble focusing today?',
+    answer: lang === 'zh' ? '允许自己先做 10 秒钟简单的物理动作（例如起立喝杯水），这能有效降低前额叶的启动阻力。' : 'Allow yourself to start with a simple 10-second physical movement like standing up to grab water. This lowers activation barriers.',
+    articleTitle: lang === 'zh' ? '返回首页' : 'Home',
+    articleHref: '/',
+    tag: lang === 'zh' ? '脑力建议' : 'Insight'
+  });
+}
+
+// 在服务端随机选择初始问答
+const initialIndex = Math.floor(Math.random() * allFAQs.length);
+const initialFAQ = allFAQs[initialIndex];
+---
+
+<div 
+  id="faq-card" 
+  class="lens-card relative overflow-hidden rounded-[2rem] p-6 md:p-8 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto lg:mx-0 flex flex-col justify-between h-[400px] sm:h-[340px] lg:h-[320px]"
+  data-faqs={JSON.stringify(allFAQs)}
+  data-current-index={initialIndex}
+>
+  <!-- 背景隐约的水晶投影 (Premium Watermark Design) -->
+  <div class="absolute top-1/2 right-4 -translate-y-1/2 w-48 h-48 opacity-[0.03] pointer-events-none -z-10 text-zinc-900">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+      <polygon points="50,15 20,55 50,55" fill="currentColor" />
+      <polygon points="50,15 50,55 80,55" fill="currentColor" />
+      <polygon points="50,85 20,55 50,55" fill="currentColor" />
+      <polygon points="50,85 50,55 80,55" fill="currentColor" />
+    </svg>
+  </div>
+
+  <div>
+    <!-- Header: Tag -->
+    <div class="flex items-center justify-between">
+      <span 
+        id="faq-tag" 
+        class="px-2.5 py-0.5 bg-zinc-100/80 text-zinc-500 text-[10px] font-bold rounded-full uppercase tracking-wider select-none border border-zinc-200/40 transition-opacity duration-300"
+      >
+        {initialFAQ.tag}
+      </span>
+    </div>
+
+    <!-- Body: Q&A -->
+    <div id="faq-body-container" class="my-4 flex flex-col space-y-2 transition-opacity duration-300 flex-grow">
+      <h3 
+        id="faq-question" 
+        class="text-base md:text-lg font-bold text-[#18181b] leading-snug tracking-tight"
+      >
+        {initialFAQ.question}
+      </h3>
+      <p 
+        id="faq-answer" 
+        class="text-xs md:text-sm text-zinc-500 leading-relaxed font-medium mt-1"
+      >
+        {initialFAQ.answer}
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div>
+    <div class="border-t border-black/5 my-3"></div>
+    <div class="flex items-center justify-between">
+      <!-- Article Link -->
+      <div id="faq-footer-meta" class="flex flex-col space-y-0.5 max-w-[85%] min-w-0 transition-opacity duration-300">
+        <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+          {t('surprise.from_article')}
+        </span>
+        <a 
+          id="faq-article-link" 
+          href={initialFAQ.articleHref} 
+          class="text-xs md:text-sm font-bold text-[#18181b] hover:text-violet-600 transition-colors line-clamp-1"
+        >
+          {initialFAQ.articleTitle}
+        </a>
+      </div>
+
+      <!-- Refresh Button -->
+      <button 
+        id="faq-refresh-btn" 
+        aria-label="Next Q&A" 
+        class="w-9 h-9 rounded-full flex items-center justify-center text-zinc-400 hover:text-black hover:bg-black/5 active:scale-95 transition-all cursor-pointer select-none"
+      >
+        <svg 
+          id="faq-refresh-icon"
+          xmlns="http://www.w3.org/2000/svg" 
+          width="15" 
+          height="15" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          stroke-width="2.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          class="transition-transform duration-500"
+        >
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+          <path d="M16 3h5v5"/>
+          <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+          <path d="M8 21H3v-5"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupFaqCard() {
+    const card = document.getElementById('faq-card');
+    const refreshBtn = document.getElementById('faq-refresh-btn');
+    const refreshIcon = document.getElementById('faq-refresh-icon');
+    
+    const tagEl = document.getElementById('faq-tag');
+    const bodyEl = document.getElementById('faq-body-container');
+    const footerMetaEl = document.getElementById('faq-footer-meta');
+    const questionEl = document.getElementById('faq-question');
+    const answerEl = document.getElementById('faq-answer');
+    const articleLinkEl = document.getElementById('faq-article-link') as HTMLAnchorElement;
+
+    if (!card || !refreshBtn || !tagEl || !bodyEl || !footerMetaEl || !questionEl || !answerEl || !articleLinkEl) return;
+
+    // 解析服务端传入的所有 Q&A 数据
+    const faqs = JSON.parse(card.getAttribute('data-faqs') || '[]');
+    let currentIndex = parseInt(card.getAttribute('data-current-index') || '0', 10);
+
+    if (faqs.length <= 1) {
+      refreshBtn.style.display = 'none'; // 如果只有一条问答，隐藏刷新按钮
+      return;
+    }
+
+    let isTransitioning = false;
+    let rotationDegrees = 0;
+    let autoPlayTimer: any = null;
+
+    // 切换问答的核心功能
+    function nextFaq(isManual = false) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      // 刷新图标旋转效果
+      rotationDegrees += 360;
+      if (refreshIcon) {
+        refreshIcon.style.transform = `rotate(${rotationDegrees}deg)`;
+      }
+
+      // 防重机制选择随机索引
+      let nextIndex = currentIndex;
+      while (nextIndex === currentIndex) {
+        nextIndex = Math.floor(Math.random() * faqs.length);
+      }
+      currentIndex = nextIndex;
+      card!.setAttribute('data-current-index', currentIndex.toString());
+
+      const nextFAQ = faqs[currentIndex];
+
+      // 平滑透明度渐变过渡
+      tagEl!.classList.add('opacity-0');
+      bodyEl!.classList.add('opacity-0');
+      footerMetaEl!.classList.add('opacity-0');
+
+      setTimeout(() => {
+        tagEl!.textContent = nextFAQ.tag;
+        questionEl!.textContent = nextFAQ.question;
+        answerEl!.textContent = nextFAQ.answer;
+        articleLinkEl!.textContent = nextFAQ.articleTitle;
+        articleLinkEl!.href = nextFAQ.articleHref;
+
+        tagEl!.classList.remove('opacity-0');
+        bodyEl!.classList.remove('opacity-0');
+        footerMetaEl!.classList.remove('opacity-0');
+        
+        isTransitioning = false;
+      }, 250);
+
+      // 如果是手动切换，重置自动轮播计时器
+      if (isManual) {
+        resetAutoPlay();
+      }
+    }
+
+    // 自动轮播管理
+    function startAutoPlay() {
+      if (autoPlayTimer) clearInterval(autoPlayTimer);
+      autoPlayTimer = setInterval(() => {
+        nextFaq(false);
+      }, 6000);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+    }
+
+    function resetAutoPlay() {
+      stopAutoPlay();
+      startAutoPlay();
+    }
+
+    // 绑定手动点击
+    refreshBtn.addEventListener('click', () => {
+      nextFaq(true);
+    });
+
+    // 绑定鼠标悬浮感应
+    card.addEventListener('mouseenter', stopAutoPlay);
+    card.addEventListener('mouseleave', startAutoPlay);
+
+    // 默认开启轮播
+    startAutoPlay();
+
+    // 防止 Astro View Transitions 多次进入导致背景定时器重叠和内存泄漏
+    const oldCleanup = (window as any).__faqCleanup;
+    if (oldCleanup) oldCleanup();
+
+    (window as any).__faqCleanup = () => {
+      stopAutoPlay();
+      card.removeEventListener('mouseenter', stopAutoPlay);
+      card.removeEventListener('mouseleave', startAutoPlay);
+    };
+  }
+
+  // 挂载逻辑，支持 Astro 的 View Transitions
+  setupFaqCard();
+  document.addEventListener('astro:page-load', setupFaqCard);
+</script>

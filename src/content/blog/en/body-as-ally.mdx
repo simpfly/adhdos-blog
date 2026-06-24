@@ -6,6 +6,8 @@ heroImage: "../../../assets/blog/body-as-ally.png"
 tags: ["ADHD", "Non-medication", "Exercise", "Diet"]
 ---
 
+import FAQSchema from '../../../components/FAQSchema.astro';
+
 <div class="bg-zinc-50/80 border border-black/5 rounded-2xl p-6 mb-10">
   <div class="text-xs font-black text-violet-700 tracking-wider mb-2 flex items-center gap-1.5">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -83,11 +85,17 @@ The body runs ahead of the mind. Help the machine run, and the thoughts will fol
 
 ## Quick Q&A
 
-### Why does stretching make me feel restless and annoyed?
-Totally normal. Our brain is used to speed. Slowing down suddenly triggers a boredom withdrawal. Don't force quiet meditation. Put on a podcast or music while you stretch. Give the brain a bit of background noise so it behaves.
-
-### How do I know if I'm just low on motivation or if my blood sugar crashed?
-Check the clock. If you eat pasta, bread, or sweets and feel wiped out, shaky, or highly distracted 1.5 to 2 hours later, it is a crash. Next time, eat a hard-boiled egg or some cucumbers before the carbs.
-
-### What if I just cannot move before my period?
-Go with your rhythm. Progesterone surges before your cycle, and energy naturally drops. Don't force a workout. Do some easy stretches in bed or take a hot bath. Give yourself a pass; it is normal.
+<FAQSchema questions={[
+  {
+    question: "Why does stretching make me feel restless and annoyed?",
+    answer: "Totally normal. Our brain is used to speed. Slowing down suddenly triggers a boredom withdrawal. Don't force quiet meditation. Put on a podcast or music while you stretch. Give the brain a bit of background noise so it behaves."
+  },
+  {
+    question: "How do I know if I'm just low on motivation or if my blood sugar crashed?",
+    answer: "Check the clock. If you eat pasta, bread, or sweets and feel wiped out, shaky, or highly distracted 1.5 to 2 hours later, it is a crash. Next time, eat a hard-boiled egg or some cucumbers before the carbs."
+  },
+  {
+    question: "What if I just cannot move before my period?",
+    answer: "Go with your rhythm. Progesterone surges before your cycle, and energy naturally drops. Don't force a workout. Do some easy stretches in bed or take a hot bath. Give yourself a pass; it is normal."
+  }
+]} />

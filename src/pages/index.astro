@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
+import SurpriseMe from '../components/SurpriseMe.astro';
 import { useTranslations } from '../i18n/utils';
 import { defaultLang } from '../i18n/ui';
 const lang = defaultLang;
@@ -13,24 +14,27 @@ const posts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 <BaseLayout title="ADHD OS Blog | 探索神经多样性" description={t('hero.description')}>
-  <!-- Hero Section -->
-  <div class="text-center mb-24 md:mb-32 space-y-6 mt-8 md:mt-16 relative">
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/5 border border-black/5 text-black text-xs md:text-sm font-bold backdrop-blur-md mb-4">
-      <span class="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></span>
-      <span>{t('hero.badge')}</span>
+  <!-- Hero & Q&A Grid Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-16 md:mb-24 mt-8 md:mt-16">
+    <!-- Left: Slogan (Hero Section) -->
+    <div class="lg:col-span-6 space-y-6 text-left">
+      <h1 class="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-black tracking-tighter text-[#2D2B35] leading-[1.1]">
+        <span class="italic">Mind</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right inline-block mx-2 md:mx-3 text-zinc-300"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        <span class="italic">Move</span>
+        <br/>
+        {t('hero.subtitle')}<span class="text-violet-600">{t('hero.highlight')}</span>
+      </h1>
+      
+      <p class="text-base md:text-lg text-zinc-500 max-w-2xl font-medium leading-relaxed">
+        {t('hero.description')}
+      </p>
     </div>
-    
-    <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-[#2D2B35] leading-[1.1]">
-      <span class="italic">Mind</span>
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right inline-block mx-2 md:mx-4 text-zinc-300"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      <span class="italic">Move</span>
-      <br/>
-      {t('hero.subtitle')}<span class="text-violet-600">{t('hero.highlight')}</span>
-    </h1>
-    
-    <p class="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto font-medium mt-6">
-      {t('hero.description')}
-    </p>
+
+    <!-- Right: Q&A Card -->
+    <div class="lg:col-span-6 w-full flex lg:justify-end">
+      <SurpriseMe lang={lang} />
+    </div>
   </div>
 
   <!-- Articles List -->

@@ -6,6 +6,8 @@ heroImage: "../../../assets/blog/adhd-focus-can.png"
 tags: ["ADHD", "Perfectionism", "Neurodiversity", "Self-acceptance"]
 ---
 
+import FAQSchema from '../../../components/FAQSchema.astro';
+
 <div class="bg-zinc-50/80 border border-black/5 rounded-2xl p-6 mb-10">
   <div class="text-xs font-black text-violet-700 tracking-wider mb-2 flex items-center gap-1.5">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -118,11 +120,17 @@ Stop fitting into the "should" mold. Put down the whip, be a happy "good-enoughi
 
 ## Quick Q&A
 
-### What is the difference between ADHD perfectionism and OCD?
-ADHD perfectionism stems from executive dysfunction defense (fear of failure leads to task avoidance); OCD involves high anxiety and compulsive, ritualistic behaviors.
-
-### If I keep lowering my standards, won't I just become lazy and fail?
-No. It's about selective laziness. Being lazy about laundry lets you save energy to be great at your core work or hobbies. It's energy management, not quitting.
-
-### What if I break tasks down but still can't start the first step?
-Your battery is likely at 0%. Forcing it only increases anxiety. Accept the crash and rest without guilt. True rest is how you recover dopamine.
+<FAQSchema questions={[
+  {
+    question: "What is the difference between ADHD perfectionism and OCD?",
+    answer: "ADHD perfectionism stems from executive dysfunction defense (fear of failure leads to task avoidance); OCD involves high anxiety and compulsive, ritualistic behaviors."
+  },
+  {
+    question: "If I keep lowering my standards, won't I just become lazy and fail?",
+    answer: "No. It's about selective laziness. Being lazy about laundry lets you save energy to be great at your core work or hobbies. It's energy management, not quitting."
+  },
+  {
+    question: "What if I break tasks down but still can't start the first step?",
+    answer: "Your battery is likely at 0%. Forcing it only increases anxiety. Accept the crash and rest without guilt. True rest is how you recover dopamine."
+  }
+]} />
