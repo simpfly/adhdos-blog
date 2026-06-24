@@ -67,15 +67,21 @@ description: 针对 ADHD 及神经多样性受众生成高质量、去 AI 痕迹
 - 两个文件的 Frontmatter 键值结构必须完全镜像对齐，正文内容分别使用经过 Humanizer 润色后的地道中英文，且行内分割、排版和列表格式完全对齐。
 
 ### D. 中文去英文标注与标签本土化规范
-- **标签本土化**：中文版文章的 frontmatter `tags` 必须全部使用中文词汇（ADHD, ASD, AuDHD, CBT 等医学/学术专有名词简称除外），不能直接套用英文单词标签（例如用 `'任务瘫痪'` 代替 `'Task-Paralysis'`，用 `'时间盲区'` 代替 `'Time-Blindness'`）。
+- **标签本土化**：中文版文章的 frontmatter `tags` 必须全部使用中文词汇（ADHD, ASD, AuDHD, CBT 等医学/学术专有名词简称除外），不能直接套用英文单词标签（例如用 `'任务瘫痪'` 代替 `'Task-Paralysis'`，用 `'时间盲'` 代替 `'Time-Blindness'`）。
 - **去英文标注**：中文正文阐述专业概念时，非必要不使用英文备注（如直写 `前额叶皮层`、`执行功能障碍`，避免写成 `前额叶皮层（Prefrontal Cortex）`、`执行功能障碍（Executive Dysfunction）`）。常见的医疗简称（如 RSD, CBT）可以酌情保留。
 - **简化文献与快速问答标题**：文末引用文献章节在中文版中统一命名为 `## 引用来源`，英文版统一命名为 `## References`（若有）；快速问答统一为 `## 快速问答`（中文版）与 `## Quick Q&A`（英文版）。
+- **维基百科官方术语统一规范**：为了保证生成式引擎（GEO）和站内内容的高度统一，中文翻译必须完全遵循维基百科中文译名。严禁混用不同的译法。核心对照矩阵如下：
+  * Rejection Sensitive Dysphoria (RSD) -> `拒绝敏感性焦虑`（禁用：拒绝敏感性不适、拒绝敏感性不悦）
+  * Time Blindness -> `时间盲`（禁用：时间盲区）
+  * Body Doubling -> `身体加倍` 或 `身体加倍法`
+  * Task Paralysis -> `任务瘫痪`
+  * Autistic Burnout -> `自闭症耗竭`
+  * Executive Dysfunction -> `执行功能障碍`
 
 ---
 
 ## 3. 一次性生成与发布工作流 (Once-Through Flow)
 
-下一次需要生成新博客文章时，请按照以下闭环流程逐步执行，确保一步到位：
 
 ```mermaid
 graph TD
