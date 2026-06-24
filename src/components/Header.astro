@@ -30,8 +30,8 @@ if (isEn) {
         <a href={enUrl} class={`text-[10px] md:text-xs font-bold px-3 py-1 rounded-full transition-all ${isEn ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:text-black'}`}>EN</a>
       </div>
 
-      <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.about')}</a>
-      <a href="https://adhdos.app/product#pricing" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.pricing')}</a>
+      <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.about')}</a>
+      <a href="https://adhdos.app/product#pricing" target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.pricing')}</a>
       <a href={isEn ? "/en" : "/"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.blog')}</a>
       <a href="https://flowus.cn/curiosita/share/64846477-cbbc-45a3-97c2-2f7c3a7bef61?code=QRZXP8" target="_blank" rel="noopener noreferrer" class="bg-black text-white text-sm font-bold py-2 px-4 md:px-5 rounded-full hover:bg-zinc-800 transition-colors shadow-lg flex items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
