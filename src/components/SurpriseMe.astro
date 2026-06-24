@@ -159,13 +159,19 @@ const initialFAQ = allFAQs[initialIndex];
   data-faqs={JSON.stringify(allFAQs)}
   data-current-index={initialIndex}
 >
-  <!-- 背景隐约的水晶投影 (Premium Watermark Design) -->
+  <!-- 背景隐约的无穷大投影 (Premium Watermark Design) -->
   <div class="absolute top-1/2 right-4 -translate-y-1/2 w-48 h-48 opacity-[0.03] pointer-events-none -z-10 text-zinc-900">
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-      <polygon points="50,15 20,55 50,55" fill="currentColor" />
-      <polygon points="50,15 50,55 80,55" fill="currentColor" />
-      <polygon points="50,85 20,55 50,55" fill="currentColor" />
-      <polygon points="50,85 50,55 80,55" fill="currentColor" />
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      stroke-width="1.5" 
+      stroke-linecap="round" 
+      stroke-linejoin="round" 
+      class="w-full h-full"
+    >
+      <path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 1 0 0-8c-2 0-4 1.33-6 4Z"/>
     </svg>
   </div>
 
