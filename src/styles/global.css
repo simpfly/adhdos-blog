@@ -4,7 +4,7 @@
 /* ===== 设计 token（与主站 adhdos.app 对齐）===== */
 @theme {
   --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-  --font-serif: "Cormorant Garamond", Georgia, Cambria, "Times New Roman", Times, "Nimbus Roman No9 L", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", "Source Han Serif CN", "Songti SC", STSong, "AR PL New Sung", "AR PL MITTED Sung", "MS Song", serif;
+  --font-serif: "Cormorant Garamond", Cambria, "Times New Roman", Times, "Nimbus Roman No9 L", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", "Source Han Serif CN", "Songti SC", STSong, "AR PL New Sung", "AR PL MITTED Sung", "MS Song", Georgia, serif;
 
   /* 主站 accent */
   --color-violet: #a78bfa;
