@@ -142,6 +142,8 @@
 /* ===== 统一 prose-serif 下所有文本元素的衬线字体，防止粗体、标题等回退到系统黑体 ===== */
 .prose-serif :where(h1, h2, h3, h4, h5, h6, p, li, strong, a, blockquote, td, th, dt, dd, span, time):not(pre, code, pre *, code *, [class*="bg-"], [class*="accent-"]) {
   font-family: var(--font-serif) !important;
+  font-variant-numeric: lining-nums !important;
+  font-feature-settings: "lnum" 1 !important;
 }
 
 /* 统一博客详情页中所有层级标题为衬线体，保持字体对齐 */
@@ -152,6 +154,8 @@
 .blog-post-container h5,
 .blog-post-container h6 {
   font-family: var(--font-serif) !important;
+  font-variant-numeric: lining-nums !important;
+  font-feature-settings: "lnum" 1 !important;
 }
 
 /* 修复标题内超链接被强制变细的问题，强制其继承标题本身的字重比重 */
