@@ -155,7 +155,7 @@ const initialFAQ = allFAQs[initialIndex];
 
 <div 
   id="faq-card" 
-  class="lens-card relative overflow-hidden rounded-[2rem] p-6 md:p-8 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto lg:mx-0 flex flex-col justify-between h-[400px] sm:h-[340px] lg:h-[320px]"
+  class="lens-card relative overflow-hidden rounded-[2rem] p-5 sm:p-6 md:p-8 w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto lg:mx-0 flex flex-col justify-between h-[400px] sm:h-[340px] lg:h-[320px]"
   data-faqs={JSON.stringify(allFAQs)}
   data-current-index={initialIndex}
 >
@@ -173,12 +173,17 @@ const initialFAQ = allFAQs[initialIndex];
   <div>
     <div class="flex items-center justify-between min-h-[36px]">
       <!-- Article Link -->
-      <div id="faq-header-meta" class="flex items-center space-x-1.5 max-w-[80%] min-w-0 transition-opacity duration-300 text-[10px] md:text-xs font-bold text-zinc-400 select-none uppercase tracking-wider">
-        <span class="shrink-0">{t('surprise.from_article')}:</span>
+      <div 
+        id="faq-header-meta" 
+        class="flex flex-col sm:flex-row sm:items-center sm:space-x-1.5 max-w-[80%] min-w-0 transition-opacity duration-300 text-[10px] md:text-xs font-bold text-zinc-400 select-none uppercase tracking-wider"
+      >
+        <span class="shrink-0">
+          {t('surprise.from_article')}<span class="hidden sm:inline">:</span>
+        </span>
         <a 
           id="faq-article-link" 
           href={initialFAQ.articleHref} 
-          class="font-extrabold text-[#18181b] hover:text-violet-600 transition-colors line-clamp-1 normal-case tracking-normal"
+          class="font-extrabold text-[#18181b] hover:text-violet-600 transition-colors line-clamp-1 normal-case tracking-normal mt-0.5 sm:mt-0 text-xs md:text-sm"
         >
           {initialFAQ.articleTitle}
         </a>
