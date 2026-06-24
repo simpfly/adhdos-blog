@@ -280,6 +280,7 @@ const initialFAQ = allFAQs[initialIndex];
     let isTransitioning = false;
     let rotationDegrees = 0;
     let autoPlayTimer: any = null;
+    let isHovered = false;
 
     // 切换问答的核心功能
     function nextFaq(isManual = false) {
@@ -326,9 +327,21 @@ const initialFAQ = allFAQs[initialIndex];
 
     // 自动轮播管理
     function startAutoPlay() {
+      // 检查物理 hover 状态和变量状态，如果已被悬停，则不开启轮播定时器
+      const isPhysicallyHovered = card && card.matches(':hover');
+      if (isHovered || isPhysicallyHovered) {
+        return;
+      }
       if (autoPlayTimer) clearInterval(autoPlayTimer);
       autoPlayTimer = setInterval(() => {
-        nextFaq(false);
+        const currentlyHovered = card && card.matches(':hover');
+        if (!isHovered && !currentlyHovered) {
+          nextFaq(false);
+        } else {
+          // 状态修正：虽然定时器在运行，但实际鼠标已悬停，立即停止
+          isHovered = true;
+          stopAutoPlay();
+        }
       }, 6000);
     }
 
@@ -344,14 +357,26 @@ const initialFAQ = allFAQs[initialIndex];
       startAutoPlay();
     }
 
-    // 绑定手动点击
-    refreshBtn.addEventListener('click', () => {
+    const onMouseEnter = () => {
+      isHovered = true;
+      stopAutoPlay();
+    };
+
+    const onMouseLeave = () => {
+      isHovered = false;
+      startAutoPlay();
+    };
+
+    const onRefreshClick = () => {
       nextFaq(true);
-    });
+    };
+
+    // 绑定手动点击
+    refreshBtn.addEventListener('click', onRefreshClick);
 
     // 绑定鼠标悬浮感应
-    card.addEventListener('mouseenter', stopAutoPlay);
-    card.addEventListener('mouseleave', startAutoPlay);
+    card.addEventListener('mouseenter', onMouseEnter);
+    card.addEventListener('mouseleave', onMouseLeave);
 
     // 默认开启轮播
     startAutoPlay();
@@ -359,8 +384,11 @@ const initialFAQ = allFAQs[initialIndex];
     // 注册清理函数供下一次切换页面或重载时调用
     (window as any).__faqCleanup = () => {
       stopAutoPlay();
-      card.removeEventListener('mouseenter', stopAutoPlay);
-      card.removeEventListener('mouseleave', startAutoPlay);
+      card.removeEventListener('mouseenter', onMouseEnter);
+      card.removeEventListener('mouseleave', onMouseLeave);
+      if (refreshBtn) {
+        refreshBtn.removeEventListener('click', onRefreshClick);
+      }
     };
   }
 
