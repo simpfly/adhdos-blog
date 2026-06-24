@@ -4,7 +4,7 @@
 /* ===== 设计 token（与主站 adhdos.app 对齐）===== */
 @theme {
   --font-sans: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
-  --font-serif: "Cormorant Garamond", "Noto Serif SC", Georgia, serif;
+  --font-serif: "Cormorant Garamond", Georgia, Cambria, "Times New Roman", Times, "Nimbus Roman No9 L", "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", "Source Han Serif CN", STSong, "AR PL New Sung", "AR PL MITTED Sung", "MS Song", serif;
 
   /* 主站 accent */
   --color-violet: #a78bfa;
@@ -137,4 +137,9 @@
 /* Anchor link offset so headings aren't hidden behind the sticky header */
 :target {
   scroll-margin-top: 6rem;
+}
+
+/* ===== 统一 prose-serif 下所有文本元素的衬线字体，防止粗体、标题等回退到系统黑体 ===== */
+.prose-serif :where(h1, h2, h3, h4, h5, h6, p, li, strong, a, blockquote, td, th, dt, dd, span, time):not(pre, code, pre *, code *, [class*="bg-"], [class*="accent-"]) {
+  font-family: var(--font-serif) !important;
 }
