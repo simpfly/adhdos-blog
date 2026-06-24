@@ -67,7 +67,18 @@ const recommendedPosts = otherPosts
   .slice(0, 3)
   .map(item => item.post);
 ---
-<BaseLayout title={`${title} - ADHD OS Blog`} description={description}>
+<BaseLayout
+  title={`${title} - ADHD OS Blog`}
+  description={description}
+  lang={lang}
+  article={{
+    title,
+    description,
+    pubDate,
+    updatedDate: post.data.updatedDate,
+    heroImage: heroImage?.src,
+  }}
+>
   <article class="max-w-4xl mx-auto">
     <div class="lens-card p-10 md:p-16">
       <header class="mb-10 border-b border-black/5 pb-8">

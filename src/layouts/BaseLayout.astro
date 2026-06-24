@@ -4,28 +4,94 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { getLangFromUrl } from '../i18n/utils';
 
+// 站点配置：与 astro.config.mjs 的 SITE 保持一致
+const SITE = 'https://blog.adhdos.app';
+// 静态品牌资源（icon / OG fallback）托管在主站 adhdos.app，非 blog 子域
+const BRAND_ASSETS = 'https://adhdos.app';
+
+interface ArticleMeta {
+  title: string;
+  description: string;
+  pubDate: Date;
+  heroImage?: string;   // 绝对 URL 或经 Astro 处理后的 .src 路径
+  updatedDate?: Date;
+}
+
 interface Props {
   title: string;
   description: string;
+  // 文章页传入完整元数据以启用 OG / Twitter Card / Article schema；
+  // 列表页不传，退化为站点级 meta。
+  article?: ArticleMeta;
+  lang?: 'zh' | 'en';
 }
 
-const { title, description } = Astro.props;
-const lang = getLangFromUrl(Astro.url);
+const { title, description, article, lang } = Astro.props;
+const resolvedLang = lang ?? getLangFromUrl(Astro.url);
+const locale = resolvedLang === 'en' ? 'en_US' : 'zh_CN';
+
+// OG / Twitter Card 字段：文章优先，否则用页面级 title/description
+const ogTitle = article?.title ?? title;
+const ogDescription = article?.description ?? description;
+const ogImage = article?.heroImage
+  ? new URL(article.heroImage, SITE).href
+  : `${BRAND_ASSETS}/assets/icon_ADHDOS.png`; // 站点级 fallback（主站品牌资源）
+const canonicalURL = new URL(Astro.url.pathname, SITE).href;
+
+// Article JSON-LD（仅文章页生成）
+const articleSchema = article
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.description,
+      image: ogImage,
+      datePublished: article.pubDate.toISOString(),
+      ...(article.updatedDate ? { dateModified: article.updatedDate.toISOString() } : {}),
+      author: { '@type': 'Organization', name: 'ADHD OS' },
+      publisher: { '@type': 'Organization', name: 'ADHD OS', logo: { '@type': 'ImageObject', url: `${BRAND_ASSETS}/assets/icon_ADHDOS.png` } },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalURL },
+      inLanguage: resolvedLang === 'en' ? 'en-US' : 'zh-CN',
+    }
+  : null;
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={resolvedLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:locale" content={locale} />
+    <meta property="og:site_name" content="ADHD OS Blog" />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImage} />
+    {article && <meta property="article:published_time" content={article.pubDate.toISOString()} />}
+    {article?.updatedDate && <meta property="article:modified_time" content={article.updatedDate.toISOString()} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {articleSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    )}
+
     <link rel="icon" href="https://adhdos.app/assets/icon_ADHDOS.png" />
     <link rel="sitemap" href="/blog/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title="ADHD OS Blog RSS Feed" href="/blog/rss.xml" />
   </head>
   <body class="min-h-screen flex flex-col font-sans selection:bg-violet-500/30">
     <!-- Background Elements -->
-    <div class="fixed blob bg-purple-200/40 w-64 h-64 md:w-96 md:h-96 rounded-full top-0 left-0 -translate-x-1/2 -translate-y-1/2 -z-10 blur-3xl pointer-events-none"></div>
+    <div class="fixed blob bg-purple-200/40 w-64 h-64 md:w-96 md:h-96 rounded-full top-0 left-0 -translate-x-12 -translate-y-1/2 -z-10 blur-3xl pointer-events-none"></div>
     <div class="fixed blob bg-indigo-100/40 w-64 h-64 md:w-[30rem] md:h-[30rem] rounded-full bottom-0 right-0 translate-x-1/3 translate-y-1/3 -z-10 blur-3xl pointer-events-none" style="animation-delay: -5s;"></div>
 
     <Header />
