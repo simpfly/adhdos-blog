@@ -169,21 +169,26 @@ const initialFAQ = allFAQs[initialIndex];
     </svg>
   </div>
 
+  <!-- Top Section (Header) -->
   <div>
-    <!-- Header: Tag & Refresh -->
-    <div class="flex items-center justify-between">
-      <span 
-        id="faq-tag" 
-        class="px-2.5 py-0.5 bg-zinc-100/80 text-zinc-500 text-[10px] font-bold rounded-full uppercase tracking-wider select-none border border-zinc-200/40 transition-opacity duration-300"
-      >
-        {initialFAQ.tag}
-      </span>
+    <div class="flex items-center justify-between min-h-[36px]">
+      <!-- Article Link -->
+      <div id="faq-header-meta" class="flex items-center space-x-1.5 max-w-[80%] min-w-0 transition-opacity duration-300 text-[10px] md:text-xs font-bold text-zinc-400 select-none uppercase tracking-wider">
+        <span class="shrink-0">{t('surprise.from_article')}:</span>
+        <a 
+          id="faq-article-link" 
+          href={initialFAQ.articleHref} 
+          class="font-extrabold text-[#18181b] hover:text-violet-600 transition-colors line-clamp-1 normal-case tracking-normal"
+        >
+          {initialFAQ.articleTitle}
+        </a>
+      </div>
       
       <!-- Refresh Button -->
       <button 
         id="faq-refresh-btn" 
         aria-label="Next Q&A" 
-        class="w-9 h-9 -mr-2.5 rounded-full flex items-center justify-center text-zinc-400 hover:text-black hover:bg-black/5 active:scale-95 transition-all cursor-pointer select-none"
+        class="w-9 h-9 -mr-2.5 rounded-full flex items-center justify-center text-zinc-400 hover:text-black hover:bg-black/5 active:scale-95 transition-all cursor-pointer select-none shrink-0"
       >
         <svg 
           id="faq-refresh-icon"
@@ -206,58 +211,51 @@ const initialFAQ = allFAQs[initialIndex];
       </button>
     </div>
 
-    <!-- Body: Q&A -->
-    <div id="faq-body-container" class="my-4 flex flex-col space-y-2 transition-opacity duration-300 flex-grow">
-      <h3 
-        id="faq-question" 
-        class="text-base md:text-lg font-bold text-[#18181b] leading-snug tracking-tight"
-      >
-        {initialFAQ.question}
-      </h3>
-      <p 
-        id="faq-answer" 
-        class="text-xs md:text-sm text-zinc-500 leading-relaxed font-medium mt-1"
-      >
-        {initialFAQ.answer}
-      </p>
-    </div>
+    <!-- Separator -->
+    <div class="border-b border-black/5 my-3"></div>
   </div>
 
-  <!-- Footer -->
-  <div>
-    <div class="border-t border-black/5 my-3"></div>
-    <div class="flex items-center justify-between">
-      <!-- Article Link -->
-      <div id="faq-footer-meta" class="flex flex-col space-y-0.5 max-w-[100%] min-w-0 transition-opacity duration-300">
-        <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
-          {t('surprise.from_article')}
-        </span>
-        <a 
-          id="faq-article-link" 
-          href={initialFAQ.articleHref} 
-          class="text-xs md:text-sm font-bold text-[#18181b] hover:text-violet-600 transition-colors line-clamp-1"
-        >
-          {initialFAQ.articleTitle}
-        </a>
-      </div>
-    </div>
+  <!-- Bottom Section (Body) -->
+  <div id="faq-body-container" class="flex flex-col space-y-2 transition-opacity duration-300 flex-grow justify-center">
+    <h3 
+      id="faq-question" 
+      class="text-base md:text-lg font-bold text-[#18181b] leading-snug tracking-tight"
+    >
+      {initialFAQ.question}
+    </h3>
+    <p 
+      id="faq-answer" 
+      class="text-xs md:text-sm text-zinc-500 leading-relaxed font-medium mt-1"
+    >
+      {initialFAQ.answer}
+    </p>
   </div>
 </div>
 
 <script>
   function setupFaqCard() {
+    // 1. 优先清理上一个页面留下的定时器与事件监听
+    const oldCleanup = (window as any).__faqCleanup;
+    if (oldCleanup) {
+      try {
+        oldCleanup();
+      } catch (e) {
+        console.error('Failed to run FAQ cleanup:', e);
+      }
+      (window as any).__faqCleanup = null;
+    }
+
     const card = document.getElementById('faq-card');
     const refreshBtn = document.getElementById('faq-refresh-btn');
     const refreshIcon = document.getElementById('faq-refresh-icon');
     
-    const tagEl = document.getElementById('faq-tag');
     const bodyEl = document.getElementById('faq-body-container');
-    const footerMetaEl = document.getElementById('faq-footer-meta');
+    const headerMetaEl = document.getElementById('faq-header-meta');
     const questionEl = document.getElementById('faq-question');
     const answerEl = document.getElementById('faq-answer');
     const articleLinkEl = document.getElementById('faq-article-link') as HTMLAnchorElement;
 
-    if (!card || !refreshBtn || !tagEl || !bodyEl || !footerMetaEl || !questionEl || !answerEl || !articleLinkEl) return;
+    if (!card || !refreshBtn || !bodyEl || !headerMetaEl || !questionEl || !answerEl || !articleLinkEl) return;
 
     // 解析服务端传入的所有 Q&A 数据
     const faqs = JSON.parse(card.getAttribute('data-faqs') || '[]');
@@ -294,20 +292,17 @@ const initialFAQ = allFAQs[initialIndex];
       const nextFAQ = faqs[currentIndex];
 
       // 平滑透明度渐变过渡
-      tagEl!.classList.add('opacity-0');
       bodyEl!.classList.add('opacity-0');
-      footerMetaEl!.classList.add('opacity-0');
+      headerMetaEl!.classList.add('opacity-0');
 
       setTimeout(() => {
-        tagEl!.textContent = nextFAQ.tag;
         questionEl!.textContent = nextFAQ.question;
         answerEl!.textContent = nextFAQ.answer;
         articleLinkEl!.textContent = nextFAQ.articleTitle;
         articleLinkEl!.href = nextFAQ.articleHref;
 
-        tagEl!.classList.remove('opacity-0');
         bodyEl!.classList.remove('opacity-0');
-        footerMetaEl!.classList.remove('opacity-0');
+        headerMetaEl!.classList.remove('opacity-0');
         
         isTransitioning = false;
       }, 250);
@@ -350,10 +345,7 @@ const initialFAQ = allFAQs[initialIndex];
     // 默认开启轮播
     startAutoPlay();
 
-    // 防止 Astro View Transitions 多次进入导致背景定时器重叠和内存泄漏
-    const oldCleanup = (window as any).__faqCleanup;
-    if (oldCleanup) oldCleanup();
-
+    // 注册清理函数供下一次切换页面或重载时调用
     (window as any).__faqCleanup = () => {
       stopAutoPlay();
       card.removeEventListener('mouseenter', stopAutoPlay);
