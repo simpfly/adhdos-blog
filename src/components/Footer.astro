@@ -1,14 +1,25 @@
 ---
+import { getLangFromUrl } from '../i18n/utils';
+
 const today = new Date();
+const lang = getLangFromUrl(Astro.url);
+const isEn = lang === 'en';
 ---
 <footer class="mt-32 border-t border-black/5 bg-white/30 backdrop-blur-sm py-12 text-center">
   <div class="container mx-auto max-w-5xl px-4 flex flex-col items-center gap-4">
-    <a href="/" class="text-xl font-black tracking-tighter flex items-center gap-2 text-zinc-400 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
+    <a href={isEn ? '/en' : '/'} class="text-xl font-black tracking-tighter flex items-center gap-2 text-zinc-400 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
       <img src="https://adhdos.app/assets/icon_ADHDOS.png" alt="Logo" class="w-6 h-6 rounded-md" />
       ADHD OS
     </a>
+    <div class="flex items-center gap-4 text-zinc-400 text-xs font-medium">
+      <a href="/rss.xml" class="hover:text-zinc-600 transition-colors">RSS</a>
+      <span class="text-zinc-300">·</span>
+      <a href="/sitemap-index.xml" class="hover:text-zinc-600 transition-colors">Sitemap</a>
+      <span class="text-zinc-300">·</span>
+      <a href="https://adhdos.app/about" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-600 transition-colors">{isEn ? 'About' : '关于'}</a>
+    </div>
     <p class="text-zinc-400 text-sm font-medium">
-      &copy; {today.getFullYear()} Simpfly. 保留所有权利。
+      &copy; {today.getFullYear()} Simpfly. {isEn ? 'All rights reserved.' : '保留所有权利。'}
     </p>
   </div>
 </footer>

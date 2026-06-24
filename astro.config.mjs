@@ -19,7 +19,15 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'zh',
+        locales: { zh: 'zh-CN', en: 'en-US' },
+      },
+    }),
+  ],
   vite: {
     // @ts-ignore
     plugins: [tailwindcss()],
