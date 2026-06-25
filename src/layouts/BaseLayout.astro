@@ -95,7 +95,7 @@ const articleSchema = article
     <div class="fixed blob bg-indigo-100/40 w-64 h-64 md:w-[30rem] md:h-[30rem] rounded-full bottom-0 right-0 translate-x-1/3 translate-y-1/3 -z-10 blur-3xl pointer-events-none" style="animation-delay: -5s;"></div>
 
     <Header />
-    <main class="flex-grow max-w-5xl mx-auto w-full px-4 pt-28 md:pt-36">
+    <main class={`flex-grow mx-auto w-full px-4 pt-28 md:pt-36 ${article ? 'max-w-7xl' : 'max-w-5xl'}`}>
       <slot />
     </main>
     <Footer />

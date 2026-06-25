@@ -20,6 +20,7 @@ export const ui = {
     'post.recommended_reading': '推荐阅读',
     'surprise.from_article': '出自文章',
     'surprise.default_tag': '快速问答',
+    'post.toc': '目录',
   },
   en: {
     'nav.about': 'About',
@@ -35,5 +36,6 @@ export const ui = {
     'post.recommended_reading': 'Recommended Reading',
     'surprise.from_article': 'FROM ARTICLE',
     'surprise.default_tag': 'Q&A',
+    'post.toc': 'Table of Contents',
   },
 } as const;

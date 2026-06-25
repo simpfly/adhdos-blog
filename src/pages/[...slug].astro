@@ -19,8 +19,8 @@ export async function getStaticPaths() {
 }
 
 const { post, lang } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
-<BlogPost post={post} lang={lang as 'zh' | 'en'}>
+<BlogPost post={post} lang={lang as 'zh' | 'en'} headings={headings}>
   <Content />
 </BlogPost>
