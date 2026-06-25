@@ -13,7 +13,7 @@ const posts = allPosts
   .filter(post => post.id.startsWith(`${lang}/`))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
-<BaseLayout title="ADHD OS Blog | 探索神经多样性" description={t('hero.description')}>
+<BaseLayout title="ADHD OS Blog | 探索神经多样性" description="享受分心，自然专注。写给神经多样性大脑的自救指南——ADHD、ASD 的执行功能、时间盲、情绪调节与科学糊弄哲学。">
   <!-- Hero & Q&A Grid Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-16 md:mb-24 mt-8 md:mt-16">
     <!-- Left: Slogan (Hero Section) -->
@@ -25,7 +25,7 @@ const posts = allPosts
             ADHDOS<span class="text-violet-600 font-medium">：Mind→Move</span>
           </h1>
           <p class="text-lg md:text-xl text-zinc-500 font-medium leading-relaxed">
-            {t('hero.description')}
+            享受分心，自然专注。
           </p>
         </div>
       </div>
