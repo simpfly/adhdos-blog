@@ -29,6 +29,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    text-autospace: normal;
   }
 
   body {
@@ -108,12 +109,18 @@
     margin-top: 1.6rem !important;
     margin-bottom: 1.8rem !important; /* 拓宽段落间距，消除视觉压迫 */
     color: var(--color-ink) !important;
+    line-break: strict;
+    text-align: justify;
+    text-justify: inter-ideographic;
   }
 
   .prose li {
     line-height: 1.75 !important;
     margin-top: 0.6rem !important;
     margin-bottom: 0.6rem !important; /* 扩大列表项垂直空隙，强化可读度 */
+    line-break: strict;
+    text-align: justify;
+    text-justify: inter-ideographic;
   }
 
   /* 将无序列表的原点更换为亮紫色，作为强力视觉扫描锚点 */
@@ -218,6 +225,10 @@
 .prose blockquote p:last-of-type {
   margin-bottom: 0 !important;
 }
+.prose blockquote p::before,
+.prose blockquote p::after {
+  content: "" !important;
+}
 
 /* 5. 行内代码去噪点与徽章美化 */
 .prose :where(code):not(:where([class~="not-prose"] *))::before {
@@ -233,4 +244,21 @@
   font-size: 0.875em !important;
   font-family: var(--font-mono) !important;
   font-weight: 500 !important;
+}
+
+/* ===== W3C 中文排版辅助类 ===== */
+.zh-emphasis {
+  text-emphasis: dot !important;
+  text-emphasis-position: under right !important;
+  text-emphasis-color: currentColor !important;
+  font-style: normal !important;
+}
+
+.proper-noun {
+  text-decoration: underline !important;
+  text-underline-offset: 0.2em !important;
+}
+
+.ellipsis-nowrap {
+  white-space: nowrap !important;
 }
