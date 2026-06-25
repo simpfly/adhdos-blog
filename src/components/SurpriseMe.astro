@@ -181,7 +181,7 @@ const initialFAQ = allFAQs[initialIndex];
       <!-- Article Link -->
       <div 
         id="faq-header-meta" 
-        class="flex flex-col sm:flex-row sm:items-center sm:space-x-1.5 max-w-[80%] min-w-0 transition-opacity duration-300 text-[10px] md:text-xs font-bold text-zinc-400 select-none uppercase tracking-wider"
+        class="flex flex-col sm:flex-row sm:items-center sm:space-x-1.5 max-w-[80%] min-w-0 transition-opacity duration-200 text-[10px] md:text-xs font-bold text-zinc-400 select-none uppercase tracking-wider"
       >
         <span class="shrink-0">
           {t('surprise.from_article')}<span class="hidden sm:inline">:</span>
@@ -227,7 +227,7 @@ const initialFAQ = allFAQs[initialIndex];
   </div>
 
   <!-- Bottom Section (Body) -->
-  <div id="faq-body-container" class="flex flex-col space-y-2 transition-opacity duration-300 flex-grow justify-center">
+  <div id="faq-body-container" class="flex flex-col space-y-2 transition-opacity duration-200 flex-grow justify-center">
     <h3 
       id="faq-question" 
       class="text-base md:text-lg font-bold text-[#18181b] leading-snug tracking-tight"
@@ -242,6 +242,20 @@ const initialFAQ = allFAQs[initialIndex];
     </p>
   </div>
 </div>
+
+<style>
+  #faq-body-container,
+  #faq-header-meta {
+    will-change: opacity;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+  #faq-refresh-icon {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+</style>
 
 <script>
   function setupFaqCard() {
@@ -303,21 +317,34 @@ const initialFAQ = allFAQs[initialIndex];
 
       const nextFAQ = faqs[currentIndex];
 
-      // 平滑透明度渐变过渡
+      // 平滑透明度渐变过渡：第1步：触发淡出（持续 200ms）
       bodyEl!.classList.add('opacity-0');
       headerMetaEl!.classList.add('opacity-0');
 
       setTimeout(() => {
+        // 第2步：当完全淡出（200ms后）替换内容
         questionEl!.textContent = nextFAQ.question;
         answerEl!.textContent = nextFAQ.answer;
         articleLinkEl!.textContent = nextFAQ.articleTitle;
         articleLinkEl!.href = nextFAQ.articleHref;
 
-        bodyEl!.classList.remove('opacity-0');
-        headerMetaEl!.classList.remove('opacity-0');
-        
-        isTransitioning = false;
-      }, 250);
+        // 第3步：强制触发重排（Reflow），让浏览器在完全透明的状态下重新排版
+        void bodyEl!.offsetHeight;
+        void headerMetaEl!.offsetHeight;
+
+        // 第4步：使用双重 requestAnimationFrame 延迟移除 opacity-0，保证排版完成后再淡入
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            bodyEl!.classList.remove('opacity-0');
+            headerMetaEl!.classList.remove('opacity-0');
+            
+            // 第5步：等待淡入动画完全结束后（再过 200ms），再将防重标记置回 false
+            setTimeout(() => {
+              isTransitioning = false;
+            }, 200);
+          });
+        });
+      }, 200);
 
       // 如果是手动切换，重置自动轮播计时器
       if (isManual) {
@@ -333,16 +360,17 @@ const initialFAQ = allFAQs[initialIndex];
         return;
       }
       if (autoPlayTimer) clearInterval(autoPlayTimer);
+      // 增加轮播间隔到 12 秒，照顾注意力集中受限的受众，减少干扰
       autoPlayTimer = setInterval(() => {
         const currentlyHovered = card && card.matches(':hover');
         if (!isHovered && !currentlyHovered) {
           nextFaq(false);
         } else {
-          // 状态修正：虽然定时器在运行，但实际鼠标已悬停，立即停止
+          // 状态修正：虽然定时器在运行，但实际鼠标已悬停或触摸，立即停止
           isHovered = true;
           stopAutoPlay();
         }
-      }, 6000);
+      }, 12000);
     }
 
     function stopAutoPlay() {
@@ -367,6 +395,21 @@ const initialFAQ = allFAQs[initialIndex];
       startAutoPlay();
     };
 
+    const onTouchStart = () => {
+      isHovered = true;
+      stopAutoPlay();
+    };
+
+    const onTouchEnd = () => {
+      isHovered = false;
+      // 在触摸结束后延迟 1.5 秒再恢复自动轮播，确保不打断触控滑动与阅读
+      setTimeout(() => {
+        if (!isHovered) {
+          startAutoPlay();
+        }
+      }, 1500);
+    };
+
     const onRefreshClick = () => {
       nextFaq(true);
     };
@@ -378,6 +421,10 @@ const initialFAQ = allFAQs[initialIndex];
     card.addEventListener('mouseenter', onMouseEnter);
     card.addEventListener('mouseleave', onMouseLeave);
 
+    // 绑定移动端触摸事件
+    card.addEventListener('touchstart', onTouchStart, { passive: true });
+    card.addEventListener('touchend', onTouchEnd, { passive: true });
+
     // 默认开启轮播
     startAutoPlay();
 
@@ -386,6 +433,8 @@ const initialFAQ = allFAQs[initialIndex];
       stopAutoPlay();
       card.removeEventListener('mouseenter', onMouseEnter);
       card.removeEventListener('mouseleave', onMouseLeave);
+      card.removeEventListener('touchstart', onTouchStart);
+      card.removeEventListener('touchend', onTouchEnd);
       if (refreshBtn) {
         refreshBtn.removeEventListener('click', onRefreshClick);
       }
