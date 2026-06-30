@@ -21,10 +21,26 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
 >
   <div class="flashcards-page-wrapper w-full max-w-4xl mx-auto min-h-[60vh] flex flex-col justify-center py-6 md:py-12">
     
-    <!-- 极简 Slogan 标语 (专注模式下隐藏，高雅的字间距) -->
-    <div class="focus-hide text-center mb-6 text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-zinc-400 select-none">
-      {t('flashcard.slogan')}
-    </div>
+    <!-- ADHDOS 品牌 Banner 标头 (专注模式下隐藏) -->
+    <header class="focus-hide flex items-center justify-center gap-4 mb-10 select-none">
+      <!-- 品牌 Logo -->
+      <img 
+        src="https://adhdos.app/assets/icon_ADHDOS.png" 
+        alt="ADHDOS Logo" 
+        class="w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-sm border border-black/5 shrink-0" 
+      />
+      <!-- 品牌文字与 Slogan 区域 -->
+      <div class="flex flex-col justify-center">
+        <!-- 品牌名 -->
+        <h1 class="text-xl md:text-2xl font-black tracking-tight text-zinc-900 flex items-center gap-1 leading-none">
+          <span>ADHDOS</span><span class="text-violet-600 font-extrabold">:</span><span class="text-violet-600 font-bold">Mind→Move</span>
+        </h1>
+        <!-- 动态 Slogan (ND 速问速答 - 看见、学习、适应) -->
+        <p class="text-xs md:text-sm text-zinc-500 font-bold tracking-wide mt-1.5">
+          {t('flashcard.slogan')}
+        </p>
+      </div>
+    </header>
 
     <!-- Tag 过滤器（专注模式下隐藏，极简文本导航设计） -->
     <nav class="focus-hide flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8 md:mb-10 text-xs md:text-sm font-bold" aria-label="Tag Filter">
