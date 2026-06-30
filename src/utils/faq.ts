@@ -40,23 +40,11 @@ function parseFrontmatter(content: string) {
   return { title, tags };
 }
 
-// 规范化并合并同义标签，消除重复
-function normalizeTag(tag: string, lang: 'zh' | 'en'): string {
-  const t = tag.trim();
-  if (lang === 'zh') {
-    if (t === '高敏感') return '高敏感 HSP';
-  } else {
-    if (t === 'Highly Sensitive HSP' || t === 'Highly Sensitive Person') return 'HSP';
-  }
-  return t;
-}
-
 // 提取 Q&A 数据
 function parseFAQs(content: string, isZh: boolean, slug: string, defaultTag: string, lang: 'zh' | 'en'): FAQItem[] {
   const faqs: FAQItem[] = [];
   const { title, tags } = parseFrontmatter(content);
-  const rawTag = tags[0] || defaultTag;
-  const tag = normalizeTag(rawTag, lang);
+  const tag = tags[0] || defaultTag;
   const href = isZh ? `/${slug}/` : `/${lang}/${slug}/`;
   
   // 1. 优先提取 FAQSchema
