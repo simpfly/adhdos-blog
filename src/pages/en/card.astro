@@ -1,0 +1,486 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getAllFAQs } from '../../utils/faq';
+import { useTranslations } from '../../i18n/utils';
+
+const lang = 'en';
+const t = useTranslations(lang);
+
+// 在服务端获取所有问答数据
+const allFAQs = getAllFAQs(lang, t('surprise.default_tag'));
+
+// 收集所有去重后的标签，并拼装上“全部”
+const uniqueTags = [...new Set(allFAQs.map(item => item.tag).filter(Boolean))];
+const tags = [t('flashcard.tag_all'), ...uniqueTags];
+---
+
+<BaseLayout 
+  title={`${t('flashcard.title')} | ADHD OS Blog`} 
+  description={t('flashcard.subtitle')}
+  lang={lang}
+>
+  <div class="flashcards-page-wrapper w-full max-w-4xl mx-auto min-h-[60vh] flex flex-col justify-center py-6 md:py-12">
+    
+    <!-- Tag 过滤器（专注模式下隐藏，极简文本导航设计） -->
+    <nav class="focus-hide flex flex-wrap justify-center gap-x-6 gap-y-2 mb-8 md:mb-10 text-xs md:text-sm font-bold" aria-label="Tag Filter">
+      {tags.map((tag, idx) => (
+        <button
+          type="button"
+          class={`tag-filter-btn pb-1 border-b-2 transition-all cursor-pointer select-none ${
+            idx === 0 
+              ? 'text-zinc-900 border-zinc-900' 
+              : 'text-zinc-400 border-transparent hover:text-zinc-700'
+          }`}
+          data-tag={idx === 0 ? 'all' : tag}
+        >
+          {tag}
+        </button>
+      ))}
+    </nav>
+
+    <!-- 闪卡主容器 -->
+    <main class="flashcards-main-container w-full max-w-2xl mx-auto flex-grow flex flex-col justify-center">
+      
+      <!-- 闪卡主体（玻璃态卡片） -->
+      <article 
+        id="main-flashcard" 
+        class="lens-card relative w-full min-h-[380px] p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden bg-white/70 backdrop-blur-xl border border-black/5 rounded-[2.5rem] shadow-sm select-none"
+        data-faqs={JSON.stringify(allFAQs)}
+        data-tag-all-label={t('flashcard.tag_all')}
+      >
+        <!-- 卡片头部元数据 (无横线极简设计) -->
+        <header class="flex items-center justify-between min-h-[32px] mb-2">
+          <!-- 出处链接 -->
+          <div class="flex items-center space-x-1 text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-wider max-w-[70%]">
+            <span class="shrink-0">{t('surprise.from_article')}:</span>
+            <a 
+              id="card-article-link" 
+              href="#" 
+              class="font-extrabold text-zinc-800 hover:text-violet-600 transition-colors line-clamp-1 normal-case tracking-normal"
+            >
+              Loading...
+            </a>
+          </div>
+
+          <!-- 分类标签 -->
+          <span 
+            id="card-tag" 
+            class="accent-pill inline-block text-[10px] md:text-xs font-bold px-3 py-1 bg-violet-100 text-violet-700 rounded-full"
+          >
+            Loading...
+          </span>
+        </header>
+
+        <!-- 卡片内容区（柔和淡入淡出） -->
+        <section 
+          id="card-content-area" 
+          class="flex-grow flex flex-col justify-center py-6 md:py-8 transition-opacity duration-150 ease-in-out"
+        >
+          <!-- 问题（正面） -->
+          <h2 
+            id="card-question" 
+            class="text-lg sm:text-xl md:text-2xl font-black text-zinc-900 leading-snug tracking-tight text-center md:text-left"
+          >
+            Loading...
+          </h2>
+          <!-- 答案（直接显示，不需点击翻牌） -->
+          <p 
+            id="card-answer" 
+            class="text-sm sm:text-base md:text-lg text-zinc-600 leading-relaxed font-medium mt-4 text-center md:text-left"
+          >
+            Loading...
+          </p>
+        </section>
+
+        <!-- 卡片底部状态栏 -->
+        <footer class="flex items-center justify-between pt-2 text-xs font-bold text-zinc-400 tracking-wider">
+          <!-- 进度指示器 -->
+          <span id="card-progress">
+            0 / 0
+          </span>
+        </footer>
+      </article>
+
+      <!-- 极简双向切换控制台 -->
+      <section 
+        id="flashcard-controls" 
+        class="flex items-center justify-center gap-12 mt-6 md:mt-8 w-full max-w-xs mx-auto"
+        aria-label="Flashcard Controls"
+      >
+        <!-- 上一张 -->
+        <button 
+          id="prev-card-btn" 
+          type="button"
+          aria-label="Previous Flashcard"
+          class="text-zinc-400 hover:text-zinc-800 text-2xl font-bold p-3 transition-colors cursor-pointer select-none"
+        >
+          ←
+        </button>
+
+        <!-- 下一张 -->
+        <button 
+          id="next-card-btn" 
+          type="button"
+          aria-label="Next Flashcard"
+          class="text-zinc-400 hover:text-zinc-800 text-2xl font-bold p-3 transition-colors cursor-pointer select-none"
+        >
+          →
+        </button>
+      </section>
+
+      <!-- 辅助文本控制区 (普通模式下显示，极其干净的文字超链接) -->
+      <div class="focus-hide flex justify-center items-center gap-4 mt-6 text-[10px] md:text-xs text-zinc-400 font-bold select-none">
+        <button 
+          id="toggle-bank-btn" 
+          type="button" 
+          class="hover:text-zinc-800 transition-colors cursor-pointer border-0 bg-transparent p-0 font-bold"
+          data-show-bank-label={t('flashcard.show_bank')}
+          data-hide-bank-label={t('flashcard.hide_bank')}
+        >
+          {t('flashcard.show_bank')}
+        </button>
+        <span class="text-zinc-300">|</span>
+        <button 
+          id="enter-focus-btn" 
+          type="button" 
+          class="hover:text-zinc-800 transition-colors cursor-pointer border-0 bg-transparent p-0 font-bold"
+        >
+          {t('flashcard.focus_mode')}
+        </button>
+      </div>
+
+      <!-- 专注模式下独占的退出链接 (普通模式下隐藏) -->
+      <div class="focus-show flex justify-center items-center mt-6 text-[10px] md:text-xs text-zinc-400 font-bold select-none">
+        <button 
+          id="exit-focus-btn" 
+          type="button" 
+          class="hover:text-zinc-800 transition-colors cursor-pointer border-0 bg-transparent p-0 font-bold"
+        >
+          {t('flashcard.exit_focus')} (ESC)
+        </button>
+      </div>
+
+      <!-- 快捷键提示（专注模式下隐藏） -->
+      <footer class="focus-hide text-center mt-6 px-4">
+        <p class="text-[10px] text-zinc-400 font-medium leading-relaxed max-w-md mx-auto">
+          {t('flashcard.keyboard_tip')}
+        </p>
+      </footer>
+
+      <!-- 题库列表容器 (专注模式下自动隐藏，且由 dataset 传入多语言变量) -->
+      <div 
+        id="qa-bank-container" 
+        class="focus-hide w-full max-w-2xl mx-auto mt-6 pb-12" 
+        style="display: none;"
+        data-from-label={t('surprise.from_article')}
+        data-empty-label={t('flashcard.empty')}
+      ></div>
+
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  /* 针对专注模式下的布局优化 */
+  :global(body.focus-active) {
+    /* 隐藏全局 Header 和 Footer */
+    :global(header) {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(-100%);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    }
+    :global(footer) {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(100%);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    }
+    /* 隐藏背景装饰 Blob */
+    :global(.blob) {
+      opacity: 0 !important;
+      transition: opacity 0.4s ease !important;
+    }
+    /* 调整主体 padding */
+    :global(main.flex-grow) {
+      padding-top: 4rem !important;
+      transition: padding-top 0.4s ease;
+    }
+  }
+
+  /* 延迟过渡以获得最佳呼吸感 */
+  .focus-hide {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    will-change: opacity, transform;
+  }
+  :global(body.focus-active) .focus-hide {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(-10px);
+  }
+
+  .flashcards-main-container {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  /* 翻页时的呼吸感淡入淡出 */
+  #card-content-area {
+    will-change: opacity;
+  }
+
+  /* 专注模式专有元素的显示/隐藏 */
+  .focus-show {
+    display: none;
+  }
+  :global(body.focus-active) .focus-show {
+    display: flex !important;
+  }
+</style>
+
+<script>
+  function setupFlashcards() {
+    // 1. 清理上一次加载可能残留的事件监听与全局变量
+    const oldCleanup = (window as any).__flashcardCleanup;
+    if (oldCleanup) {
+      try {
+        oldCleanup();
+      } catch (e) {
+        console.error('Failed to run flashcard cleanup:', e);
+      }
+      (window as any).__flashcardCleanup = null;
+    }
+
+    const card = document.getElementById('main-flashcard');
+    const questionEl = document.getElementById('card-question');
+    const answerEl = document.getElementById('card-answer');
+    const tagEl = document.getElementById('card-tag');
+    const articleLinkEl = document.getElementById('card-article-link') as HTMLAnchorElement;
+    const progressEl = document.getElementById('card-progress');
+    
+    const prevBtn = document.getElementById('prev-card-btn');
+    const nextBtn = document.getElementById('next-card-btn');
+    const enterFocusBtn = document.getElementById('enter-focus-btn');
+    const exitFocusBtn = document.getElementById('exit-focus-btn');
+    const toggleBankBtn = document.getElementById('toggle-bank-btn') as HTMLButtonElement;
+    const bankContainer = document.getElementById('qa-bank-container');
+    const contentArea = document.getElementById('card-content-area');
+    const filterButtons = document.querySelectorAll('.tag-filter-btn');
+
+    if (
+      !card || !questionEl || !answerEl || !tagEl || !articleLinkEl || 
+      !progressEl || !prevBtn || !nextBtn || !enterFocusBtn || 
+      !exitFocusBtn || !toggleBankBtn || !bankContainer || !contentArea
+    ) return;
+
+    // 解析初始数据
+    const allFAQs = JSON.parse(card.getAttribute('data-faqs') || '[]');
+    const tagAllLabel = card.getAttribute('data-tag-all-label') || 'All';
+    let filteredFAQs = [...allFAQs];
+    
+    let currentIndex = 0;
+    let isTransitioning = false;
+    let isBankVisible = false;
+
+    // 自动适配语言的客户端文案（从 DOM 属性读取）
+    const txtShowBank = toggleBankBtn.getAttribute('data-show-bank-label') || 'Show Q&A Bank';
+    const txtHideBank = toggleBankBtn.getAttribute('data-hide-bank-label') || 'Hide Q&A Bank';
+    const txtFrom = bankContainer.getAttribute('data-from-label') || 'From Article';
+    const txtEmpty = bankContainer.getAttribute('data-empty-label') || 'No Q&As';
+
+    // 渲染题库列表
+    function renderBank() {
+      if (!isBankVisible) {
+        bankContainer!.style.display = 'none';
+        toggleBankBtn.textContent = txtShowBank;
+        return;
+      }
+
+      toggleBankBtn.textContent = txtHideBank;
+
+      if (filteredFAQs.length === 0) {
+        bankContainer!.innerHTML = `<p class="text-center text-zinc-400 py-8">${txtEmpty}</p>`;
+        bankContainer!.style.display = 'block';
+        return;
+      }
+
+      const listHtml = filteredFAQs.map((faq, index) => {
+        const isActive = index === currentIndex;
+        return `
+          <div class="qa-bank-item p-5 md:p-6 border-b border-black/5 last:border-b-0 hover:bg-black/[0.01] transition-all flex flex-col gap-2 rounded-2xl ${
+            isActive 
+              ? 'bg-violet-500/5 border-l-4 border-l-violet-600 pl-4 md:pl-5' 
+              : ''
+          }">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="text-sm md:text-base font-bold text-zinc-900 leading-snug">
+                <span class="text-violet-600 font-extrabold mr-1.5">Q.</span>${faq.question}
+              </h3>
+              <span class="text-[10px] md:text-xs font-bold px-2 py-0.5 bg-zinc-100 text-zinc-500 rounded-full shrink-0 uppercase tracking-wider">${faq.tag}</span>
+            </div>
+            <p class="text-xs md:text-sm text-zinc-600 leading-relaxed font-medium">
+              <span class="text-zinc-400 font-extrabold mr-1.5">A.</span>${faq.answer}
+            </p>
+            <div class="text-[10px] md:text-xs font-bold text-zinc-400 mt-1 uppercase tracking-wider">
+              ${txtFrom}: <a href="${faq.articleHref}" class="text-zinc-500 hover:text-violet-600 transition-colors underline decoration-dotted">${faq.articleTitle}</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      bankContainer!.innerHTML = `
+        <div class="lens-card p-3 md:p-6 bg-white/50 backdrop-blur-md rounded-3xl border border-black/5 max-h-[500px] overflow-y-auto">
+          ${listHtml}
+        </div>
+      `;
+      bankContainer!.style.display = 'block';
+    }
+
+    // 渲染指定索引的卡片
+    function renderCard(fade = true) {
+      if (filteredFAQs.length === 0) {
+        questionEl!.textContent = 'No flashcards in this category';
+        answerEl!.textContent = '';
+        articleLinkEl!.textContent = 'Home';
+        articleLinkEl!.href = '/en';
+        tagEl!.textContent = '-';
+        progressEl!.textContent = '0 / 0';
+        renderBank();
+        return;
+      }
+
+      const faq = filteredFAQs[currentIndex];
+
+      const applyContent = () => {
+        questionEl!.textContent = faq.question;
+        answerEl!.textContent = faq.answer;
+        tagEl!.textContent = faq.tag;
+        articleLinkEl!.textContent = faq.articleTitle;
+        articleLinkEl!.href = faq.articleHref;
+        progressEl!.textContent = `${currentIndex + 1} / ${filteredFAQs.length}`;
+        
+        // 联动刷新题库高亮
+        renderBank();
+      };
+
+      if (fade) {
+        isTransitioning = true;
+        contentArea!.classList.add('opacity-0');
+        setTimeout(() => {
+          applyContent();
+          contentArea!.classList.remove('opacity-0');
+          setTimeout(() => {
+            isTransitioning = false;
+          }, 150);
+        }, 150);
+      } else {
+        applyContent();
+      }
+    }
+
+    // 切换卡片：向后或向前
+    function changeCard(direction: 'next' | 'prev') {
+      if (isTransitioning || filteredFAQs.length <= 1) return;
+
+      if (direction === 'next') {
+        currentIndex = (currentIndex + 1) % filteredFAQs.length;
+      } else {
+        currentIndex = (currentIndex - 1 + filteredFAQs.length) % filteredFAQs.length;
+      }
+      renderCard(true);
+    }
+
+    // 专注模式控制
+    function setFocusMode(active: boolean) {
+      if (active) {
+        document.body.classList.add('focus-active');
+      } else {
+        document.body.classList.remove('focus-active');
+      }
+    }
+
+    // 绑定 Tag 筛选事件
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLButtonElement;
+        const selectedTag = target.getAttribute('data-tag');
+
+        // 更新按钮选中态 (极简文本下划线高亮)
+        filterButtons.forEach(b => {
+          b.classList.remove('text-zinc-900', 'border-zinc-900');
+          b.classList.add('text-zinc-400', 'border-transparent');
+        });
+        target.classList.remove('text-zinc-400', 'border-transparent');
+        target.classList.add('text-zinc-900', 'border-zinc-900');
+
+        // 过滤数据
+        if (selectedTag === 'all') {
+          filteredFAQs = [...allFAQs];
+        } else {
+          filteredFAQs = allFAQs.filter((faq: any) => faq.tag === selectedTag);
+        }
+
+        currentIndex = 0;
+        renderCard(true);
+      });
+    });
+
+    // 按钮事件绑定
+    const handlePrev = () => changeCard('prev');
+    const handleNext = () => changeCard('next');
+    const handleEnterFocus = () => setFocusMode(true);
+    const handleExitFocus = () => setFocusMode(false);
+    const handleToggleBank = () => {
+      isBankVisible = !isBankVisible;
+      renderBank();
+    };
+
+    prevBtn.addEventListener('click', handlePrev);
+    nextBtn.addEventListener('click', handleNext);
+    enterFocusBtn.addEventListener('click', handleEnterFocus);
+    exitFocusBtn.addEventListener('click', handleExitFocus);
+    toggleBankBtn.addEventListener('click', handleToggleBank);
+
+    // 键盘事件处理
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      switch (e.key) {
+        case 'ArrowRight':
+          e.preventDefault();
+          changeCard('next');
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          changeCard('prev');
+          break;
+        case 'Escape': // ESC 键
+          e.preventDefault();
+          const isFocused = document.body.classList.contains('focus-active');
+          setFocusMode(!isFocused);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // 初始渲染（无渐变动效）
+    renderCard(false);
+
+    // 导出清理函数
+    (window as any).__flashcardCleanup = () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      prevBtn.removeEventListener('click', handlePrev);
+      nextBtn.removeEventListener('click', handleNext);
+      enterFocusBtn.removeEventListener('click', handleEnterFocus);
+      exitFocusBtn.removeEventListener('click', handleExitFocus);
+      toggleBankBtn.removeEventListener('click', handleToggleBank);
+      document.body.classList.remove('focus-active');
+    };
+  }
+
+  setupFlashcards();
+  document.addEventListener('astro:page-load', setupFlashcards);
+</script>
