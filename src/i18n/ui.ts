@@ -35,6 +35,7 @@ export const ui = {
     'flashcard.tag_all': '全部',
     'flashcard.empty': '该分类下暂无闪卡',
     'flashcard.keyboard_tip': '提示：可使用 键盘左右方向键 切换，空格键 翻转卡片，ESC 键切换专注模式。',
+    'flashcard.slogan': 'ND 速问速答 - 看见、学习、适应',
   },
   en: {
     'nav.about': 'About',
@@ -65,5 +66,6 @@ export const ui = {
     'flashcard.tag_all': 'All',
     'flashcard.empty': 'No flashcards in this category',
     'flashcard.keyboard_tip': 'Tip: Use Left/Right keys to switch, Space to flip, and ESC to toggle Focus Mode.',
+    'flashcard.slogan': 'ND Q&A - See, Learn, Adapt',
   },
 } as const;
