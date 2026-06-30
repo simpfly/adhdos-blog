@@ -8,19 +8,27 @@ export interface FAQItem {
   articleTitle: string;
   articleHref: string;
   tag: string;
+  pubDate?: string; // 关联文章的发布日期，用于全局排序
 }
 
-// 解析 Frontmatter 提取 title 和第一个 tag
+// 解析 Frontmatter 提取 title、第一个 tag 和发布日期
 function parseFrontmatter(content: string) {
   const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---/;
   const match = content.match(frontmatterRegex);
   let title = '';
   let tags: string[] = [];
+  let pubDate = '';
   
   if (match) {
     const fmText = match[1];
+    
+    // 提取标题
     const titleMatch = fmText.match(/title:\s*["']?([^"'\n]+)["']?/);
     if (titleMatch) title = titleMatch[1];
+    
+    // 提取发布日期
+    const pubDateMatch = fmText.match(/pubDate:\s*["']?([^"'\n]+)["']?/);
+    if (pubDateMatch) pubDate = pubDateMatch[1];
     
     // 支持 tags: ["A", "B"] 或者 yaml 列表格式
     const tagsMatch = fmText.match(/tags:\s*\[\s*([^\]]*)\s*\]/);
@@ -37,13 +45,13 @@ function parseFrontmatter(content: string) {
       }
     }
   }
-  return { title, tags };
+  return { title, tags, pubDate };
 }
 
 // 提取 Q&A 数据
 function parseFAQs(content: string, isZh: boolean, slug: string, defaultTag: string, lang: 'zh' | 'en'): FAQItem[] {
   const faqs: FAQItem[] = [];
-  const { title, tags } = parseFrontmatter(content);
+  const { title, tags, pubDate } = parseFrontmatter(content);
   const tag = tags[0] || defaultTag;
   const href = isZh ? `/${slug}/` : `/${lang}/${slug}/`;
   
@@ -60,7 +68,8 @@ function parseFAQs(content: string, isZh: boolean, slug: string, defaultTag: str
         answer: itemMatch[4].trim(),
         articleTitle: title,
         articleHref: href,
-        tag: tag
+        tag: tag,
+        pubDate: pubDate
       });
     }
   }
@@ -85,7 +94,8 @@ function parseFAQs(content: string, isZh: boolean, slug: string, defaultTag: str
             answer: a,
             articleTitle: title,
             articleHref: href,
-            tag: tag
+            tag: tag,
+            pubDate: pubDate
           });
         }
       }
@@ -115,7 +125,7 @@ function walkDir(dir: string): string[] {
   return results;
 }
 
-// 获取全部问答
+// 获取全部问答并按照关联文章日期降序排列
 export function getAllFAQs(lang: 'zh' | 'en', defaultTag: string): FAQItem[] {
   const blogDir = path.join(process.cwd(), 'src/content/blog', lang);
   const files = walkDir(blogDir);
@@ -129,6 +139,13 @@ export function getAllFAQs(lang: 'zh' | 'en', defaultTag: string): FAQItem[] {
     allFAQs = allFAQs.concat(faqs);
   });
 
+  // 全局排序：让最新发布文章的问答卡片排在最前面
+  allFAQs.sort((a, b) => {
+    const dateA = a.pubDate || '1970-01-01';
+    const dateB = b.pubDate || '1970-01-01';
+    return dateB.localeCompare(dateA);
+  });
+
   // 如果没有问答，降级处理避免报错
   if (allFAQs.length === 0) {
     allFAQs.push({
@@ -136,7 +153,8 @@ export function getAllFAQs(lang: 'zh' | 'en', defaultTag: string): FAQItem[] {
       answer: lang === 'zh' ? '允许自己先做 10 秒钟简单的物理动作（例如起立喝杯水），这能有效降低前额叶的启动阻力。' : 'Allow yourself to start with a simple 10-second physical movement like standing up to grab water. This lowers activation barriers.',
       articleTitle: lang === 'zh' ? '返回首页' : 'Home',
       articleHref: '/',
-      tag: lang === 'zh' ? '脑力建议' : 'Insight'
+      tag: lang === 'zh' ? '脑力建议' : 'Insight',
+      pubDate: '2026-06-30'
     });
   }
 

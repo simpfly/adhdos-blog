@@ -2,9 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getAllFAQs } from '../utils/faq';
 import { useTranslations } from '../i18n/utils';
-import { defaultLang } from '../i18n/ui';
 
-const lang = defaultLang;
+const lang = 'zh';
 const t = useTranslations(lang);
 
 // 在服务端获取所有问答数据
@@ -39,8 +38,8 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
       ))}
     </nav>
 
-    <!-- 闪卡主容器 -->
-    <main class="flashcards-main-container w-full max-w-2xl mx-auto flex-grow flex flex-col justify-center">
+    <!-- 闪卡主容器 (页面更宽裕：升级为 max-w-3xl) -->
+    <main class="flashcards-main-container w-full max-w-3xl mx-auto flex-grow flex flex-col justify-center">
       
       <!-- 闪卡主体（玻璃态卡片） -->
       <article 
@@ -129,18 +128,8 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
         </button>
       </section>
 
-      <!-- 辅助文本控制区 (普通模式下显示，极其干净的文字超链接) -->
+      <!-- 辅助文本控制区 (只保留专注模式) -->
       <div class="focus-hide flex justify-center items-center gap-4 mt-6 text-[10px] md:text-xs text-zinc-400 font-bold select-none">
-        <button 
-          id="toggle-bank-btn" 
-          type="button" 
-          class="hover:text-zinc-800 transition-colors cursor-pointer border-0 bg-transparent p-0 font-bold"
-          data-show-bank-label={t('flashcard.show_bank')}
-          data-hide-bank-label={t('flashcard.hide_bank')}
-        >
-          {t('flashcard.show_bank')}
-        </button>
-        <span class="text-zinc-300">|</span>
         <button 
           id="enter-focus-btn" 
           type="button" 
@@ -168,13 +157,39 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
         </p>
       </footer>
 
-      <!-- 题库列表容器 (专注模式下自动隐藏，且由 dataset 传入多语言变量) -->
+      <!-- 题库列表容器 (页面更宽裕：升级为 max-w-3xl；由 JS 动态生成卡片流) -->
       <div 
         id="qa-bank-container" 
-        class="focus-hide w-full max-w-2xl mx-auto mt-6 pb-12" 
-        style="display: none;"
+        class="focus-hide w-full max-w-3xl mx-auto mt-12" 
         data-from-label={t('surprise.from_article')}
         data-empty-label={t('flashcard.empty')}
+        data-show-bank-label={t('flashcard.show_bank')}
+      ></div>
+
+      <!-- 触底指示条 (指示用户继续下滑以展开加载) -->
+      <div 
+        id="bank-load-more-tip" 
+        class="focus-hide flex flex-col items-center justify-center py-8 text-zinc-400 font-bold select-none text-[10px] md:text-xs tracking-widest gap-2"
+      >
+        <!-- 微跳向下箭头 -->
+        <span id="load-more-icon" class="animate-bounce text-sm">↓</span>
+        
+        <!-- Lemniscate Bloom 数学动画加载器 (初始为 w-12 h-12 且隐藏) -->
+        <div id="loader-canvas-wrapper" class="hidden w-12 h-12 text-violet-500">
+          <svg viewBox="0 0 100 100" fill="none" class="w-full h-full overflow-visible">
+            <g id="loader-group">
+              <path id="loader-path" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" opacity="0.1"></path>
+            </g>
+          </svg>
+        </div>
+
+        <span>继续下滑展开查看更多</span>
+      </div>
+
+      <!-- 物理高度占位的哨兵元素 (高度缩减为 h-8，底部间距 mb-6，避免底部露出大片空白) -->
+      <div 
+        id="bank-sentinel" 
+        class="focus-hide w-full h-8 pointer-events-none mb-6"
       ></div>
 
     </main>
@@ -263,15 +278,20 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
     const nextBtn = document.getElementById('next-card-btn');
     const enterFocusBtn = document.getElementById('enter-focus-btn');
     const exitFocusBtn = document.getElementById('exit-focus-btn');
-    const toggleBankBtn = document.getElementById('toggle-bank-btn') as HTMLButtonElement;
     const bankContainer = document.getElementById('qa-bank-container');
+    const loadMoreTip = document.getElementById('bank-load-more-tip');
+    const loadMoreIcon = document.getElementById('load-more-icon');
+    const loaderWrapper = document.getElementById('loader-canvas-wrapper');
+    const loaderGroup = document.getElementById('loader-group');
+    const loaderPath = document.getElementById('loader-path');
+    const sentinel = document.getElementById('bank-sentinel');
     const contentArea = document.getElementById('card-content-area');
     const filterButtons = document.querySelectorAll('.tag-filter-btn');
 
     if (
       !card || !questionEl || !answerEl || !tagEl || !articleLinkEl || 
       !progressEl || !prevBtn || !nextBtn || !enterFocusBtn || 
-      !exitFocusBtn || !toggleBankBtn || !bankContainer || !contentArea
+      !exitFocusBtn || !bankContainer || !contentArea
     ) return;
 
     // 解析初始数据
@@ -279,50 +299,162 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
     const tagAllLabel = card.getAttribute('data-tag-all-label') || 'All';
     let filteredFAQs = [...allFAQs];
     
+    const ITEMS_PER_PAGE = 7;
+    let visibleCount = ITEMS_PER_PAGE;
     let currentIndex = 0;
     let isTransitioning = false;
-    let isBankVisible = false;
+    let isPageLoading = false;
+    let observer: IntersectionObserver | null = null;
+    let animFrameId: number;
 
     // 自动适配语言的客户端文案（从 DOM 属性读取）
-    const txtShowBank = toggleBankBtn.getAttribute('data-show-bank-label') || 'Show Q&A Bank';
-    const txtHideBank = toggleBankBtn.getAttribute('data-hide-bank-label') || 'Hide Q&A Bank';
     const txtFrom = bankContainer.getAttribute('data-from-label') || 'From Article';
     const txtEmpty = bankContainer.getAttribute('data-empty-label') || 'No Q&As';
+    const txtShowBank = bankContainer.getAttribute('data-show-bank-label') || 'Q&A Bank';
+
+    // 实例化 Lemniscate Bloom 加载动画
+    if (loaderGroup && loaderPath) {
+      const loaderConfig = {
+        particleCount: 70,
+        trailSpan: 0.4,
+        durationMs: 5600,
+        pulseDurationMs: 5000,
+        strokeWidth: 4.8,
+        lemniscateA: 20,
+        lemniscateBoost: 7,
+        point(progress: number, detailScale: number, conf: any) {
+          const t = progress * Math.PI * 2;
+          const scale = conf.lemniscateA + detailScale * conf.lemniscateBoost;
+          const denom = 1 + Math.sin(t) ** 2;
+          return {
+            x: 50 + (scale * Math.cos(t)) / denom,
+            y: 50 + (scale * Math.sin(t) * Math.cos(t)) / denom,
+          };
+        }
+      };
+
+      loaderPath.setAttribute('stroke-width', String(loaderConfig.strokeWidth));
+
+      // 动态注入 70 个拖尾粒子
+      const loaderParticles = Array.from({ length: loaderConfig.particleCount }, () => {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('fill', 'currentColor');
+        loaderGroup.appendChild(circle);
+        return circle;
+      });
+
+      function getDetailScale(time: number) {
+        const pulseProgress = (time % loaderConfig.pulseDurationMs) / loaderConfig.pulseDurationMs;
+        const pulseAngle = pulseProgress * Math.PI * 2;
+        return 0.52 + ((Math.sin(pulseAngle + 0.55) + 1) / 2) * 0.48;
+      }
+
+      function buildPath(detailScale: number, steps = 180) {
+        return Array.from({ length: steps + 1 }, (_, index) => {
+          const point = loaderConfig.point(index / steps, detailScale, loaderConfig);
+          return `${index === 0 ? 'M' : 'L'} ${point.x.toFixed(2)} ${point.y.toFixed(2)}`;
+        }).join(' ');
+      }
+
+      function getParticle(index: number, progress: number, detailScale: number) {
+        const tailOffset = index / (loaderConfig.particleCount - 1);
+        const rawProgress = progress - tailOffset * loaderConfig.trailSpan;
+        const normalized = ((rawProgress % 1) + 1) % 1;
+        const point = loaderConfig.point(normalized, detailScale, loaderConfig);
+        const fade = Math.pow(1 - tailOffset, 0.56);
+        return {
+          x: point.x,
+          y: point.y,
+          radius: 0.8 + fade * 2.2,
+          opacity: 0.04 + fade * 0.96,
+        };
+      }
+
+      const startedAt = performance.now();
+
+      function animate(now: number) {
+        const time = now - startedAt;
+        const progress = (time % loaderConfig.durationMs) / loaderConfig.durationMs;
+        const detailScale = getDetailScale(time);
+        
+        loaderPath!.setAttribute('d', buildPath(detailScale));
+        loaderParticles.forEach((node, index) => {
+          const particle = getParticle(index, progress, detailScale);
+          node.setAttribute('cx', particle.x.toFixed(2));
+          node.setAttribute('cy', particle.y.toFixed(2));
+          node.setAttribute('r', particle.radius.toFixed(2));
+          node.setAttribute('opacity', particle.opacity.toFixed(3));
+        });
+
+        animFrameId = requestAnimationFrame(animate);
+      }
+
+      animFrameId = requestAnimationFrame(animate);
+    }
+
+    // 绑定与注册触底观察器 (延迟增加到 1500ms，触发边缘线上压 20 像素，避免底部露出大片空白)
+    function setupObserver() {
+      if (observer) {
+        observer.disconnect();
+      }
+
+      if (!sentinel) return;
+
+      observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !isPageLoading) {
+          if (visibleCount < filteredFAQs.length) {
+            isPageLoading = true;
+            
+            // 触底后切换为 Lemniscate Bloom 数学加载动画
+            if (loadMoreIcon && loaderWrapper) {
+              loadMoreIcon.classList.add('hidden');
+              loaderWrapper.classList.remove('hidden');
+            }
+            const tipTextSpan = loadMoreTip?.querySelector('span:last-child');
+            if (tipTextSpan) {
+              tipTextSpan.textContent = '正在展开更多...';
+            }
+
+            setTimeout(() => {
+              visibleCount += ITEMS_PER_PAGE;
+              isPageLoading = false;
+              renderBank();
+            }, 1500); // 增加延迟至 1500ms
+          }
+        }
+      }, { 
+        rootMargin: '0px 0px -20px 0px', // 触发边缘调整为 -20 像素
+        threshold: 0.1 
+      });
+
+      observer.observe(sentinel);
+    }
 
     // 渲染题库列表
     function renderBank() {
-      if (!isBankVisible) {
-        bankContainer!.style.display = 'none';
-        toggleBankBtn.textContent = txtShowBank;
-        return;
-      }
-
-      toggleBankBtn.textContent = txtHideBank;
-
       if (filteredFAQs.length === 0) {
         bankContainer!.innerHTML = `<p class="text-center text-zinc-400 py-8">${txtEmpty}</p>`;
-        bankContainer!.style.display = 'block';
+        if (sentinel) sentinel.style.display = 'none';
+        if (loadMoreTip) loadMoreTip.style.display = 'none';
         return;
       }
 
-      const listHtml = filteredFAQs.map((faq, index) => {
-        const isActive = index === currentIndex;
+      // 获取可视的切片
+      const visibleFAQs = filteredFAQs.slice(0, visibleCount);
+
+      const listHtml = visibleFAQs.map((faq, index) => {
         return `
-          <div class="qa-bank-item p-5 md:p-6 border-b border-black/5 last:border-b-0 hover:bg-black/[0.01] transition-all flex flex-col gap-2 rounded-2xl ${
-            isActive 
-              ? 'bg-violet-500/5 border-l-4 border-l-violet-600 pl-4 md:pl-5' 
-              : ''
-          }">
+          <div class="qa-bank-item p-6 md:p-8 transition-all flex flex-col gap-2 rounded-[2rem] border bg-white/40 border-black/5 shadow-sm hover:bg-white/60">
             <div class="flex items-start justify-between gap-4">
               <h3 class="text-sm md:text-base font-bold text-zinc-900 leading-snug">
-                <span class="text-violet-600 font-extrabold mr-1.5">Q.</span>${faq.question}
+                <span class="text-violet-600 font-extrabold mr-1.5">Q${index + 1}.</span>${faq.question}
               </h3>
-              <span class="text-[10px] md:text-xs font-bold px-2 py-0.5 bg-zinc-100 text-zinc-500 rounded-full shrink-0 uppercase tracking-wider">${faq.tag}</span>
+              <span class="text-[10px] md:text-xs font-bold px-2 py-0.5 bg-zinc-100/80 text-zinc-500 rounded-full shrink-0 uppercase tracking-wider">${faq.tag}</span>
             </div>
             <p class="text-xs md:text-sm text-zinc-600 leading-relaxed font-medium">
               <span class="text-zinc-400 font-extrabold mr-1.5">A.</span>${faq.answer}
             </p>
-            <div class="text-[10px] md:text-xs font-bold text-zinc-400 mt-1 uppercase tracking-wider">
+            <div class="text-[10px] md:text-xs font-bold text-zinc-400 mt-2 uppercase tracking-wider">
               ${txtFrom}: <a href="${faq.articleHref}" class="text-zinc-500 hover:text-violet-600 transition-colors underline decoration-dotted">${faq.articleTitle}</a>
             </div>
           </div>
@@ -330,11 +462,40 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
       }).join('');
 
       bankContainer!.innerHTML = `
-        <div class="lens-card p-3 md:p-6 bg-white/50 backdrop-blur-md rounded-3xl border border-black/5 max-h-[500px] overflow-y-auto">
-          ${listHtml}
+        <div class="flex flex-col gap-4">
+          <!-- 题库极简标头 -->
+          <div class="flex items-center gap-2 mb-2 text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest pl-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></span>
+            ${txtShowBank}
+          </div>
+          <div class="flex flex-col gap-4">
+            ${listHtml}
+          </div>
         </div>
       `;
-      bankContainer!.style.display = 'block';
+
+      // 调整哨兵和加载提示的可见性与文案
+      if (sentinel && loadMoreTip) {
+        if (visibleCount >= filteredFAQs.length) {
+          sentinel.style.display = 'none';
+          loadMoreTip.style.display = 'none';
+        } else {
+          sentinel.style.display = 'block';
+          loadMoreTip.style.display = 'flex';
+          
+          // 恢复为默认下滑引导状态
+          if (loadMoreIcon && loaderWrapper) {
+            loadMoreIcon.classList.remove('hidden');
+            loaderWrapper.classList.add('hidden');
+          }
+          const tipTextSpan = loadMoreTip.querySelector('span:last-child');
+          if (tipTextSpan) {
+            tipTextSpan.textContent = '继续下滑展开查看更多';
+          }
+        }
+      }
+
+      setupObserver();
     }
 
     // 渲染指定索引的卡片
@@ -350,6 +511,11 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
         return;
       }
 
+      // 如果切片没装下当前高亮卡片，自动将列表可视条数撑大
+      if (currentIndex >= visibleCount) {
+        visibleCount = Math.floor(currentIndex / ITEMS_PER_PAGE + 1) * ITEMS_PER_PAGE;
+      }
+
       const faq = filteredFAQs[currentIndex];
 
       const applyContent = () => {
@@ -360,7 +526,7 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
         articleLinkEl!.href = faq.articleHref;
         progressEl!.textContent = `${currentIndex + 1} / ${filteredFAQs.length}`;
         
-        // 联动刷新题库高亮
+        // 刷新列表数据渲染
         renderBank();
       };
 
@@ -421,7 +587,9 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
           filteredFAQs = allFAQs.filter((faq: any) => faq.tag === selectedTag);
         }
 
+        // 重新切到分类第一页
         currentIndex = 0;
+        visibleCount = ITEMS_PER_PAGE;
         renderCard(true);
       });
     });
@@ -431,16 +599,11 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
     const handleNext = () => changeCard('next');
     const handleEnterFocus = () => setFocusMode(true);
     const handleExitFocus = () => setFocusMode(false);
-    const handleToggleBank = () => {
-      isBankVisible = !isBankVisible;
-      renderBank();
-    };
 
     prevBtn.addEventListener('click', handlePrev);
     nextBtn.addEventListener('click', handleNext);
     enterFocusBtn.addEventListener('click', handleEnterFocus);
     exitFocusBtn.addEventListener('click', handleExitFocus);
-    toggleBankBtn.addEventListener('click', handleToggleBank);
 
     // 键盘事件处理
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -467,7 +630,8 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
 
     window.addEventListener('keydown', handleKeyDown);
 
-    // 初始渲染（无渐变动效）
+    // 初始观察器设置与卡片渲染
+    setupObserver();
     renderCard(false);
 
     // 导出清理函数
@@ -477,12 +641,12 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
       nextBtn.removeEventListener('click', handleNext);
       enterFocusBtn.removeEventListener('click', handleEnterFocus);
       exitFocusBtn.removeEventListener('click', handleExitFocus);
-      toggleBankBtn.removeEventListener('click', handleToggleBank);
+      if (observer) observer.disconnect();
+      if (animFrameId) cancelAnimationFrame(animFrameId);
       document.body.classList.remove('focus-active');
     };
   }
 
-  // 页面生命周期监听（兼容 Astro View Transitions）
   setupFlashcards();
   document.addEventListener('astro:page-load', setupFlashcards);
 </script>
