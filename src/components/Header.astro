@@ -23,21 +23,117 @@ if (isEn) {
       <img src="/icon_ADHDOS.png" alt="Logo" class="w-8 h-8 rounded-lg shadow-sm" />
       ADHD OS
     </a>
-    <nav class="flex items-center gap-4 md:gap-6">
-      <!-- Language Switcher -->
-      <div class="flex items-center bg-black/5 rounded-full p-1 border border-black/5">
-        <a href={zhUrl} class={`text-[10px] md:text-xs font-bold px-3 py-1 rounded-full transition-all ${!isEn ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:text-black'}`}>CN</a>
-        <a href={enUrl} class={`text-[10px] md:text-xs font-bold px-3 py-1 rounded-full transition-all ${isEn ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:text-black'}`}>EN</a>
+    
+    <nav class="flex items-center gap-3 md:gap-6">
+      <!-- 语言切换器：常驻展示 -->
+      <div class="flex items-center bg-black/5 rounded-full p-1 border border-black/5 shrink-0">
+        <a href={zhUrl} class={`text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-full transition-all ${!isEn ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:text-black'}`}>CN</a>
+        <a href={enUrl} class={`text-[10px] md:text-xs font-bold px-2.5 py-1 rounded-full transition-all ${isEn ? 'bg-white text-black shadow-sm' : 'text-zinc-400 hover:text-black'}`}>EN</a>
       </div>
 
+      <!-- 桌面端导航链接 -->
       <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.about')}</a>
       <a href="https://adhdos.app/product#pricing" target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.pricing')}</a>
       <a href={isEn ? "/en" : "/"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.blog')}</a>
       <a href={isEn ? "/en/card" : "/card"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.flashcards')}</a>
-      <a href="https://flowus.cn/curiosita/share/64846477-cbbc-45a3-97c2-2f7c3a7bef61?code=QRZXP8" target="_blank" rel="noopener noreferrer" class="bg-black text-white text-sm font-bold py-2 px-4 md:px-5 rounded-full hover:bg-zinc-800 transition-colors shadow-lg flex items-center gap-2">
+      
+      <!-- 下载按钮：仅在桌面端显示，移动端将其移入导航菜单中 -->
+      <a href="https://flowus.cn/curiosita/share/64846477-cbbc-45a3-97c2-2f7c3a7bef61?code=QRZXP8" target="_blank" rel="noopener noreferrer" class="hidden md:flex bg-black text-white text-sm font-bold py-2 px-5 rounded-full hover:bg-zinc-800 transition-colors shadow-lg items-center gap-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-        <span class="hidden sm:inline">{t('nav.download')}</span>
+        <span>{t('nav.download')}</span>
       </a>
+
+      <!-- 移动端汉堡菜单按钮 -->
+      <button id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="切换菜单" class="md:hidden p-1.5 rounded-full text-zinc-500 hover:text-black hover:bg-black/5 focus:outline-none transition-colors">
+        <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+        <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" x2="6" y1="6" y2="18"></line>
+          <line x1="6" x2="18" y1="6" y2="18"></line>
+        </svg>
+      </button>
     </nav>
   </div>
+
+  <!-- 移动端展开式菜单面板 -->
+  <div id="mobile-menu" class="hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-white/95 backdrop-blur-xl z-40 flex flex-col justify-between p-6 border-t border-black/5 overflow-y-auto transition-all duration-200">
+    <div class="flex flex-col gap-1">
+      <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} target="_blank" rel="noopener noreferrer" class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+        <span>{t('nav.about')}</span>
+        <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="https://adhdos.app/product#pricing" target="_blank" rel="noopener noreferrer" class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+        <span>{t('nav.pricing')}</span>
+        <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href={isEn ? "/en" : "/"} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+        <span>{t('nav.blog')}</span>
+        <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href={isEn ? "/en/card" : "/card"} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+        <span>{t('nav.flashcards')}</span>
+        <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    
+    <div class="flex flex-col gap-6 mt-auto pb-8">
+      <!-- 移动端下载按钮 -->
+      <a href="https://flowus.cn/curiosita/share/64846477-cbbc-45a3-97c2-2f7c3a7bef61?code=QRZXP8" target="_blank" rel="noopener noreferrer" class="bg-black text-white text-base font-bold py-3.5 px-6 rounded-full hover:bg-zinc-800 transition-colors shadow-lg flex items-center justify-center gap-2 w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        <span>{t('nav.download')} ADHD OS</span>
+      </a>
+    </div>
+  </div>
 </header>
+
+<script>
+  function initMenu() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIconOpen = document.getElementById('menu-icon-open');
+    const menuIconClose = document.getElementById('menu-icon-close');
+
+    if (menuToggle && mobileMenu && menuIconOpen && menuIconClose) {
+      const toggleMenu = (show?: boolean) => {
+        const isCurrentlyExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        const nextState = show !== undefined ? show : !isCurrentlyExpanded;
+
+        menuToggle.setAttribute('aria-expanded', nextState.toString());
+        
+        if (nextState) {
+          mobileMenu.classList.remove('hidden');
+          menuIconOpen.classList.add('hidden');
+          menuIconClose.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        } else {
+          mobileMenu.classList.add('hidden');
+          menuIconOpen.classList.remove('hidden');
+          menuIconClose.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      };
+
+      menuToggle.addEventListener('click', () => toggleMenu());
+
+      // 点击链接后自动收起菜单
+      const menuLinks = mobileMenu.querySelectorAll('a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => toggleMenu(false));
+      });
+
+      // 支持 ESC 键退出菜单
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+          toggleMenu(false);
+        }
+      });
+    }
+  }
+
+  // 初始化菜单，兼容普通的页面加载以及 Astro 的 View Transitions (ViewTransition 路由)
+  initMenu();
+  document.addEventListener('astro:after-swap', initMenu);
+</script>
