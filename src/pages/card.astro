@@ -125,7 +125,7 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
       <!-- 极简双向切换控制台 -->
       <section 
         id="flashcard-controls" 
-        class="flex items-center justify-center gap-12 mt-6 md:mt-8 w-full max-w-xs mx-auto"
+        class="flex items-center justify-center gap-6 mt-6 md:mt-8 w-full max-w-xs mx-auto"
         aria-label="Flashcard Controls"
       >
         <!-- 上一张 -->
@@ -136,6 +136,16 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
           class="text-zinc-400 hover:text-zinc-800 text-2xl font-bold p-3 transition-colors cursor-pointer select-none"
         >
           ←
+        </button>
+
+        <!-- 随机 -->
+        <button 
+          id="random-card-btn" 
+          type="button"
+          aria-label="Random Flashcard"
+          class="text-zinc-400 hover:text-zinc-800 p-3 transition-colors cursor-pointer select-none shrink-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shuffle"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.2 0 2.3.6 3 1.7l1.1 1.6"/><path d="m15.4 12.8 1.2 1.7c.8 1.1 2 1.7 3.2 1.7H22"/><path d="m18 14 4 4-4 4"/></svg>
         </button>
 
         <!-- 下一张 -->
@@ -297,6 +307,7 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
     
     const prevBtn = document.getElementById('prev-card-btn');
     const nextBtn = document.getElementById('next-card-btn');
+    const randomBtn = document.getElementById('random-card-btn');
     const enterFocusBtn = document.getElementById('enter-focus-btn');
     const exitFocusBtn = document.getElementById('exit-focus-btn');
     const bankContainer = document.getElementById('qa-bank-container');
@@ -311,7 +322,7 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
 
     if (
       !card || !questionEl || !answerEl || !tagEl || !articleLinkEl || 
-      !progressEl || !prevBtn || !nextBtn || !enterFocusBtn || 
+      !progressEl || !prevBtn || !nextBtn || !randomBtn || !enterFocusBtn || 
       !exitFocusBtn || !bankContainer || !contentArea
     ) return;
 
@@ -566,14 +577,20 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
       }
     }
 
-    // 切换卡片：向后或向前
-    function changeCard(direction: 'next' | 'prev') {
+    // 切换卡片：向后、向前或随机
+    function changeCard(direction: 'next' | 'prev' | 'random') {
       if (isTransitioning || filteredFAQs.length <= 1) return;
 
       if (direction === 'next') {
         currentIndex = (currentIndex + 1) % filteredFAQs.length;
-      } else {
+      } else if (direction === 'prev') {
         currentIndex = (currentIndex - 1 + filteredFAQs.length) % filteredFAQs.length;
+      } else if (direction === 'random') {
+        let nextIndex = currentIndex;
+        while (nextIndex === currentIndex) {
+          nextIndex = Math.floor(Math.random() * filteredFAQs.length);
+        }
+        currentIndex = nextIndex;
       }
       renderCard(true);
     }
@@ -618,11 +635,13 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
     // 按钮事件绑定
     const handlePrev = () => changeCard('prev');
     const handleNext = () => changeCard('next');
+    const handleRandom = () => changeCard('random');
     const handleEnterFocus = () => setFocusMode(true);
     const handleExitFocus = () => setFocusMode(false);
 
     prevBtn.addEventListener('click', handlePrev);
     nextBtn.addEventListener('click', handleNext);
+    randomBtn.addEventListener('click', handleRandom);
     enterFocusBtn.addEventListener('click', handleEnterFocus);
     exitFocusBtn.addEventListener('click', handleExitFocus);
 
@@ -640,6 +659,11 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
         case 'ArrowLeft':
           e.preventDefault();
           changeCard('prev');
+          break;
+        case 'r':
+        case 'R':
+          e.preventDefault();
+          changeCard('random');
           break;
         case 'Escape': // ESC 键
           e.preventDefault();
@@ -660,6 +684,7 @@ const tags = [t('flashcard.tag_all'), ...uniqueTags];
       window.removeEventListener('keydown', handleKeyDown);
       prevBtn.removeEventListener('click', handlePrev);
       nextBtn.removeEventListener('click', handleNext);
+      randomBtn.removeEventListener('click', handleRandom);
       enterFocusBtn.removeEventListener('click', handleEnterFocus);
       exitFocusBtn.removeEventListener('click', handleExitFocus);
       if (observer) observer.disconnect();
