@@ -17,7 +17,7 @@ if (isEn) {
   enUrl = `/en${pathname === '/' ? '' : pathname}`;
 }
 ---
-<header class="fixed top-0 left-0 w-full z-50 border-b border-black/5 bg-white/70 backdrop-blur-xl">
+<header class="focus-hide fixed top-0 left-0 w-full z-50 border-b border-black/5 bg-white/70 backdrop-blur-xl">
   <div class="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between max-w-7xl">
     <a href="https://adhdos.app/product" class="text-2xl font-black tracking-tighter flex items-center gap-2 text-black hover:opacity-80 transition-opacity">
       <img src="/icon_ADHDOS.png" alt="Logo" class="w-8 h-8 rounded-lg shadow-sm" />
@@ -137,3 +137,15 @@ if (isEn) {
   initMenu();
   document.addEventListener('astro:after-swap', initMenu);
 </script>
+
+<style>
+  /* 专注模式下的导航栏平滑隐藏 */
+  header.focus-hide {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease !important;
+  }
+  :global(body.focus-active) header.focus-hide {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(-100%) !important;
+  }
+</style>
