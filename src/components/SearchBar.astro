@@ -7,6 +7,11 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+// Predefined hot keywords for search recommendations
+const recommendedTags = lang === 'zh' 
+  ? ['ADHD', 'ASD', '亲密关系', '感官寻求', '执行功能', '习惯建立', '睡眠相位后移', '糊弄哲学']
+  : ['ADHD', 'ASD', 'Relationships', 'Sensory', 'Executive Function', 'Habits', 'Sleep', 'Good-enoughism'];
 ---
 
 <div class="search-container w-full max-w-xl mx-auto mb-10 relative">
@@ -35,6 +40,27 @@ const t = useTranslations(lang);
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
+
+    <!-- Recommendations Dropdown Panel -->
+    <div
+      id="search-recommendations"
+      class="absolute left-0 right-0 top-full mt-2 bg-white/95 backdrop-blur-md border border-black/5 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] p-5 z-20 opacity-0 -translate-y-2 pointer-events-none scale-[0.99] transition-all duration-200"
+    >
+      <span class="text-[11px] font-bold text-zinc-400 tracking-wider mb-3 block uppercase select-none">
+        {t('search.recommended')}
+      </span>
+      <div class="flex flex-wrap gap-2">
+        {recommendedTags.map(tag => (
+          <button
+            type="button"
+            class="recommendation-badge px-3 py-1.5 bg-zinc-50 hover:bg-violet-50/80 text-zinc-600 hover:text-violet-700 border border-black/5 hover:border-violet-200 text-xs font-semibold rounded-xl cursor-pointer transition-all duration-150 active:scale-95"
+            data-recommend-tag={tag}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+    </div>
   </div>
 
   <!-- No Results Placeholder (controlled via JS) -->
@@ -53,11 +79,30 @@ const t = useTranslations(lang);
     const searchInput = document.getElementById('blog-search') as HTMLInputElement | null;
     const clearButton = document.getElementById('search-clear') as HTMLButtonElement | null;
     const noResults = document.getElementById('search-no-results') as HTMLDivElement | null;
+    const recommendationsPanel = document.getElementById('search-recommendations') as HTMLDivElement | null;
     
     const cards = document.querySelectorAll('[data-post-card]');
 
     if (!searchInput || !cards.length) return;
 
+    let blurTimeout: number | undefined;
+
+    // Helper functions for recommendations panel
+    const showRecommendations = () => {
+      if (!recommendationsPanel) return;
+      if (searchInput.value.trim() === '') {
+        recommendationsPanel.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2', 'scale-[0.99]');
+        recommendationsPanel.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+      }
+    };
+
+    const hideRecommendations = () => {
+      if (!recommendationsPanel) return;
+      recommendationsPanel.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0', 'scale-100');
+      recommendationsPanel.classList.add('opacity-0', 'pointer-events-none', '-translate-y-2', 'scale-[0.99]');
+    };
+
+    // Input events and search logic
     searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase().trim();
       const keywords = query.split(/\s+/).filter(k => k.length > 0);
@@ -67,9 +112,13 @@ const t = useTranslations(lang);
         if (query.length > 0) {
           clearButton.classList.remove('opacity-0', 'pointer-events-none', 'scale-90');
           clearButton.classList.add('opacity-100', 'pointer-events-auto', 'scale-100');
+          // Hide recommendations as user has started typing
+          hideRecommendations();
         } else {
           clearButton.classList.remove('opacity-100', 'pointer-events-auto', 'scale-100');
           clearButton.classList.add('opacity-0', 'pointer-events-none', 'scale-90');
+          // Show recommendations again when search input is cleared
+          showRecommendations();
         }
       }
 
@@ -103,6 +152,19 @@ const t = useTranslations(lang);
       }
     });
 
+    // Input Focus / Blur Logic
+    searchInput.addEventListener('focus', () => {
+      if (blurTimeout) clearTimeout(blurTimeout);
+      showRecommendations();
+    });
+
+    searchInput.addEventListener('blur', () => {
+      // Small delay to allow click/mousedown events on recommendation buttons to fire
+      blurTimeout = window.setTimeout(() => {
+        hideRecommendations();
+      }, 200);
+    });
+
     // Clear search event
     if (clearButton) {
       clearButton.addEventListener('click', () => {
@@ -112,12 +174,28 @@ const t = useTranslations(lang);
       });
     }
 
-    // Global listener for tag click redirection
-    const handleTagClick = (e: MouseEvent) => {
+    // Event listener for click redirection (recommendation topics and tag badges)
+    const handleGlobalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
-      if (target && target.hasAttribute('data-search-tag')) {
+      if (!target) return;
+
+      // Case 1: Clicked on a recommendation topic button
+      if (target.hasAttribute('data-recommend-tag')) {
         e.preventDefault();
         e.stopPropagation();
+        if (blurTimeout) clearTimeout(blurTimeout);
+        
+        const tagValue = target.getAttribute('data-recommend-tag') || '';
+        searchInput.value = tagValue;
+        searchInput.focus();
+        searchInput.dispatchEvent(new Event('input'));
+      }
+
+      // Case 2: Clicked on a blog post tag badge
+      if (target.hasAttribute('data-search-tag')) {
+        e.preventDefault();
+        e.stopPropagation();
+        
         const tagValue = target.getAttribute('data-search-tag') || '';
         searchInput.value = tagValue;
         searchInput.focus();
@@ -128,16 +206,16 @@ const t = useTranslations(lang);
       }
     };
 
-    document.addEventListener('click', handleTagClick);
+    document.addEventListener('click', handleGlobalClick);
     
     // Store reference to clean up listener on view swap to avoid duplicates
-    (window as any)._currentTagClickHandler = handleTagClick;
+    (window as any)._currentGlobalClickHandler = handleGlobalClick;
   }
 
   // Cleanup helper for Astro View Transitions
   document.addEventListener('astro:before-swap', () => {
-    if ((window as any)._currentTagClickHandler) {
-      document.removeEventListener('click', (window as any)._currentTagClickHandler);
+    if ((window as any)._currentGlobalClickHandler) {
+      document.removeEventListener('click', (window as any)._currentGlobalClickHandler);
     }
   });
 
