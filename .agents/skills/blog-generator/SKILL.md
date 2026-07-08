@@ -80,6 +80,8 @@ description: 针对 ADHD 及神经多样性受众生成高质量、去 AI 痕迹
   * Autistic Burnout -> `自闭症耗竭`
   * Executive Dysfunction -> `执行功能障碍`
   * Unmasking -> `卸下伪装`（禁用晦涩、有歧义的直译：`解屏蔽`）
+  * Brain Dump -> `Brain Dump`（中文版禁用“脑力倾倒”，直接显示英文）
+  * Board -> `Board`（中文版禁用“看板”，直接显示英文，注意首字母大写）
 
 ---
 
