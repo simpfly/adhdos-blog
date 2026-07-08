@@ -1,0 +1,118 @@
+---
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: 'zh' | 'en';
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="search-container w-full max-w-xl mx-auto lg:mx-0 mb-10 relative">
+  <!-- Search Input Wrapper -->
+  <div class="relative w-full">
+    <!-- Search Icon -->
+    <div class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </div>
+
+    <!-- Input Box -->
+    <input
+      type="text"
+      id="blog-search"
+      placeholder={t('search.placeholder')}
+      class="w-full py-3.5 pl-12 pr-12 text-[15px] font-medium text-black bg-zinc-50/80 border border-black/10 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.02)] focus:bg-white focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 focus:outline-none transition-all duration-250 placeholder-zinc-400"
+      autocomplete="off"
+    />
+
+    <!-- Clear Button -->
+    <button
+      id="search-clear"
+      type="button"
+      class="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full text-zinc-400 hover:text-black hover:bg-zinc-100 opacity-0 pointer-events-none scale-90 transition-all duration-200"
+      aria-label="Clear search"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- No Results Placeholder (controlled via JS) -->
+  <div id="search-no-results" class="hidden text-center py-16 px-4 border border-dashed border-black/10 rounded-2xl bg-zinc-50/30 mt-8">
+    <div class="text-zinc-300 mb-3 flex justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-search"><path d="M11 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v2.5"/><circle cx="17" cy="17" r="3"/><path d="m21 21-1.9-1.9"/></svg>
+    </div>
+    <p class="text-zinc-500 text-sm font-semibold mb-0">
+      {t('search.no_results')}
+    </p>
+  </div>
+</div>
+
+<script>
+  function setupSearch() {
+    const searchInput = document.getElementById('blog-search') as HTMLInputElement | null;
+    const clearButton = document.getElementById('search-clear') as HTMLButtonElement | null;
+    const noResults = document.getElementById('search-no-results') as HTMLDivElement | null;
+    
+    // We target elements with data-post-card
+    const cards = document.querySelectorAll('[data-post-card]');
+
+    if (!searchInput || !cards.length) return;
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      
+      // Control Clear Button visibility
+      if (clearButton) {
+        if (query.length > 0) {
+          clearButton.classList.remove('opacity-0', 'pointer-events-none', 'scale-90');
+          clearButton.classList.add('opacity-100', 'pointer-events-auto', 'scale-100');
+        } else {
+          clearButton.classList.remove('opacity-100', 'pointer-events-auto', 'scale-100');
+          clearButton.classList.add('opacity-0', 'pointer-events-none', 'scale-90');
+        }
+      }
+
+      let matchCount = 0;
+
+      cards.forEach((card) => {
+        const title = card.getAttribute('data-title') || '';
+        const description = card.getAttribute('data-description') || '';
+        const tags = card.getAttribute('data-tags') || '';
+
+        const isMatch = title.includes(query) || description.includes(query) || tags.includes(query);
+
+        if (isMatch) {
+          card.classList.remove('hidden');
+          matchCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Toggle No Results Block
+      if (noResults) {
+        if (matchCount === 0) {
+          noResults.classList.remove('hidden');
+        } else {
+          noResults.classList.add('hidden');
+        }
+      }
+    });
+
+    // Clear search event
+    if (clearButton) {
+      clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        searchInput.focus();
+        // Dispatch input event to trigger UI reset
+        searchInput.dispatchEvent(new Event('input'));
+      });
+    }
+  }
+
+  // Run on page load
+  setupSearch();
+  // Support Astro View Transitions if enabled
+  document.addEventListener('astro:after-swap', setupSearch);
+</script>

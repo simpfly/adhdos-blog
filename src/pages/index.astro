@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import SurpriseMe from '../components/SurpriseMe.astro';
+import SearchBar from '../components/SearchBar.astro';
 import { useTranslations } from '../i18n/utils';
 import { defaultLang } from '../i18n/ui';
 const lang = defaultLang;
@@ -15,7 +16,7 @@ const posts = allPosts
 ---
 <BaseLayout title="ADHD OS Blog | 探索神经多样性" description="享受分心，自然专注。写给神经多样性大脑的自救指南——ADHD、ASD 的执行功能、时间盲、情绪调节与科学糊弄哲学。">
   <!-- Hero & Q&A Grid Layout -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-16 md:mb-24 mt-8 md:mt-16">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-12 mt-8 md:mt-16">
     <!-- Left: Slogan (Hero Section) -->
     <div class="lg:col-span-6 text-center lg:text-left">
       <div class="flex items-start gap-4 justify-center lg:justify-start">
@@ -36,6 +37,9 @@ const posts = allPosts
       <SurpriseMe lang={lang} />
     </div>
   </div>
+
+  <!-- Search Bar -->
+  <SearchBar lang={lang} />
 
   <!-- Articles List -->
   <div class="mb-12 text-center md:text-left">
