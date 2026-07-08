@@ -54,13 +54,13 @@ const t = useTranslations(lang);
     const clearButton = document.getElementById('search-clear') as HTMLButtonElement | null;
     const noResults = document.getElementById('search-no-results') as HTMLDivElement | null;
     
-    // We target elements with data-post-card
     const cards = document.querySelectorAll('[data-post-card]');
 
     if (!searchInput || !cards.length) return;
 
     searchInput.addEventListener('input', () => {
       const query = searchInput.value.toLowerCase().trim();
+      const keywords = query.split(/\s+/).filter(k => k.length > 0);
       
       // Control Clear Button visibility
       if (clearButton) {
@@ -80,7 +80,10 @@ const t = useTranslations(lang);
         const description = card.getAttribute('data-description') || '';
         const tags = card.getAttribute('data-tags') || '';
 
-        const isMatch = title.includes(query) || description.includes(query) || tags.includes(query);
+        // If no keywords, it's a match. Otherwise, EVERY keyword must appear in at least one field.
+        const isMatch = keywords.length === 0 || keywords.every(keyword => 
+          title.includes(keyword) || description.includes(keyword) || tags.includes(keyword)
+        );
 
         if (isMatch) {
           card.classList.remove('hidden');
@@ -105,14 +108,40 @@ const t = useTranslations(lang);
       clearButton.addEventListener('click', () => {
         searchInput.value = '';
         searchInput.focus();
-        // Dispatch input event to trigger UI reset
         searchInput.dispatchEvent(new Event('input'));
       });
     }
+
+    // Global listener for tag click redirection
+    const handleTagClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && target.hasAttribute('data-search-tag')) {
+        e.preventDefault();
+        e.stopPropagation();
+        const tagValue = target.getAttribute('data-search-tag') || '';
+        searchInput.value = tagValue;
+        searchInput.focus();
+        searchInput.dispatchEvent(new Event('input'));
+        
+        // Soft scroll up to the search input if it's out of viewport
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    };
+
+    document.addEventListener('click', handleTagClick);
+    
+    // Store reference to clean up listener on view swap to avoid duplicates
+    (window as any)._currentTagClickHandler = handleTagClick;
   }
+
+  // Cleanup helper for Astro View Transitions
+  document.addEventListener('astro:before-swap', () => {
+    if ((window as any)._currentTagClickHandler) {
+      document.removeEventListener('click', (window as any)._currentTagClickHandler);
+    }
+  });
 
   // Run on page load
   setupSearch();
-  // Support Astro View Transitions if enabled
   document.addEventListener('astro:after-swap', setupSearch);
 </script>
