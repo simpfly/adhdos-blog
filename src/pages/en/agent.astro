@@ -46,6 +46,8 @@ Steps:
 1. Locate the path of the loaded adhdos-kb/SKILL.md file in the current session first;
 2. Confirm the old version and target path;
 3. Download the new files and overwrite them. Do not write updates to other Agents' directories.`;
+
+const testQuestion = "How is ADHD procrastination related to perfectionism, and what are the coping hacks?";
 ---
 
 <BaseLayout title={title} description={description} lang="en">
@@ -159,7 +161,7 @@ Steps:
           <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
             <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target claude</span>
             <button 
-              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
+              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
               data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target claude"
               title="Copy command"
             >
@@ -172,10 +174,10 @@ Steps:
         <!-- Codex -->
         <div>
           <span class="text-[11px] font-bold text-zinc-400 block mb-1">Codex Agent</span>
-          <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
+          <div class="bg-zinc-50 border border-zinc-200 text-zinc-850 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
             <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex</span>
             <button 
-              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-750 text-white font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
+              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
               data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex"
               title="Copy command"
             >
@@ -191,7 +193,7 @@ Steps:
           <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
             <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target agents</span>
             <button 
-              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
+              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
               data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target agents"
               title="Copy command"
             >
@@ -210,15 +212,16 @@ Steps:
         Option 3: Direct API & Content Feeds
       </h2>
       <p class="text-xs text-zinc-500 mb-4 leading-relaxed">
-        If you are building custom Retrieval pipelines, query these LLM-friendly endpoints directly:
+        If you are building custom Retrieval pipelines, click the hyperlinks below to query them, or copy via buttons:
       </p>
 
       <div class="space-y-3">
         <!-- Index -->
-        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-2">
+        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-3">
           <div class="pr-4">
             <span class="font-bold text-zinc-800 block">Knowledge Map Index (llms.txt)</span>
-            <span class="text-[11px] text-zinc-400">Markdown list maps summaries and paths for all 60+ blog articles</span>
+            <span class="text-[11px] text-zinc-400 block mb-1">Markdown list maps summaries and paths for all 60+ blog articles</span>
+            <a href="/llms.txt" target="_blank" class="text-[11px] text-violet-dark hover:underline font-mono">https://blog.adhdos.app/llms.txt</a>
           </div>
           <button 
             class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
@@ -231,10 +234,11 @@ Steps:
         </div>
 
         <!-- Full -->
-        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-2">
+        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-3">
           <div class="pr-4">
             <span class="font-bold text-zinc-800 block">Merged Markdown Package (llms-full.txt)</span>
-            <span class="text-[11px] text-zinc-400">Combines raw markdown body of all articles into a single stream</span>
+            <span class="text-[11px] text-zinc-400 block mb-1">Combines raw markdown body of all articles into a single stream</span>
+            <a href="/llms-full.txt" target="_blank" class="text-[11px] text-violet-dark hover:underline font-mono">https://blog.adhdos.app/llms-full.txt</a>
           </div>
           <button 
             class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
@@ -250,7 +254,8 @@ Steps:
         <div class="flex justify-between items-center text-xs">
           <div class="pr-4">
             <span class="font-bold text-zinc-800 block">JSON Knowledge Base API (knowledge.json)</span>
-            <span class="text-[11px] text-zinc-400">Structured array returning article metadata alongside raw markdown body</span>
+            <span class="text-[11px] text-zinc-400 block mb-1">Structured array returning article metadata alongside raw markdown body</span>
+            <a href="/api/knowledge.json" target="_blank" class="text-[11px] text-violet-dark hover:underline font-mono">https://blog.adhdos.app/api/knowledge.json</a>
           </div>
           <button 
             class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
@@ -272,8 +277,16 @@ Steps:
         <p class="text-xs text-zinc-500 leading-relaxed mb-3">
           Restart the Agent session and ask the following test prompt. A successful setup outputs highlighted keypoints with article references:
         </p>
-        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono select-all">
-          How is ADHD procrastination related to perfectionism, and what are the coping hacks?
+        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono relative pr-12 whitespace-pre-line">
+          <span>{testQuestion}</span>
+          <button 
+            class="copy-btn absolute top-2 right-2 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+            data-copy={testQuestion}
+            title="Copy question"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
+          </button>
         </div>
       </div>
 
@@ -283,7 +296,17 @@ Steps:
         <p class="text-xs text-zinc-500 leading-relaxed mb-3">
           To force-overwrite or update the values later, send this prompt directly to your Agent:
         </p>
-        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono select-all leading-relaxed whitespace-pre-line">{updatePrompt}</div>
+        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono relative pr-12 whitespace-pre-line leading-relaxed">
+          <span>{updatePrompt}</span>
+          <button 
+            class="copy-btn absolute top-2 right-2 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+            data-copy={updatePrompt}
+            title="Copy update prompt"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -301,7 +324,8 @@ Steps:
 
 <script>
   document.querySelectorAll('.copy-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
       const text = btn.getAttribute('data-copy');
       if (text) {
         try {
@@ -316,7 +340,7 @@ Steps:
           }
           
           btn.classList.add('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
+          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
           
           setTimeout(() => {
             if (copyIcon && checkIcon) {
@@ -324,7 +348,7 @@ Steps:
               checkIcon.classList.add('hidden');
             }
             btn.classList.remove('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
+            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
           }, 1500);
         } catch (err) {
           console.error('Copy failed', err);
