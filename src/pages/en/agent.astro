@@ -26,9 +26,26 @@ const openApiSchema = JSON.stringify({
   }
 }, null, 2);
 
-const agentPrompt = "Please check and install the ADHD OS Knowledge Base Skill. The rules file is at: https://blog.adhdos.app/adhdos-skill/SKILL.md and the readme is at: https://blog.adhdos.app/adhdos-skill/README.md Requirements: 1. Read the contents of both files first to ensure it only accesses the public read-only API; 2. Tell me the user-level skills directory and file name you plan to write, do not use sudo, and do not overwrite other Skills; 3. Write files to complete installation; 4. Let me know if a restart or new session is needed, and provide a verification question.";
+const agentPrompt = `Please check and install the ADHD OS Knowledge Base Skill.
 
-const updatePrompt = "Please update the currently installed ADHD OS Skill. The new rules file is at: https://blog.adhdos.app/adhdos-skill/SKILL.md and the readme is at: https://blog.adhdos.app/adhdos-skill/README.md Locate the path of the loaded adhdos-kb/SKILL.md file in the current session first, confirm the old version and target path, download the new files and overwrite them. Do not write updates to other Agents' directories.";
+Rules file: https://blog.adhdos.app/adhdos-skill/SKILL.md
+Readme file: https://blog.adhdos.app/adhdos-skill/README.md
+
+Requirements:
+1. Read the contents of both files first to ensure it only accesses the public read-only API;
+2. Tell me the user-level skills directory and file name you plan to write, do not use sudo, and do not overwrite other Skills;
+3. Write files to complete installation;
+4. Let me know if a restart or new session is needed, and provide a verification question.`;
+
+const updatePrompt = `Please update the currently installed ADHD OS Skill.
+
+New rules file: https://blog.adhdos.app/adhdos-skill/SKILL.md
+New readme file: https://blog.adhdos.app/adhdos-skill/README.md
+
+Steps:
+1. Locate the path of the loaded adhdos-kb/SKILL.md file in the current session first;
+2. Confirm the old version and target path;
+3. Download the new files and overwrite them. Do not write updates to other Agents' directories.`;
 ---
 
 <BaseLayout title={title} description={description} lang="en">
@@ -110,9 +127,9 @@ const updatePrompt = "Please update the currently installed ADHD OS Skill. The n
       </p>
       
       <div class="bg-zinc-50 border border-zinc-200 rounded-xl p-4 relative mb-4">
-        <p class="text-xs text-zinc-700 font-mono leading-relaxed select-all pr-20">{agentPrompt}</p>
+        <p class="text-xs text-zinc-700 font-mono leading-relaxed select-all pr-12 whitespace-pre-line">{agentPrompt}</p>
         <button 
-          class="copy-btn absolute top-3 right-3 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+          class="copy-btn absolute top-3 right-3 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
           data-copy={agentPrompt}
           title="Copy prompt"
         >
@@ -158,7 +175,7 @@ const updatePrompt = "Please update the currently installed ADHD OS Skill. The n
           <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
             <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex</span>
             <button 
-              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
+              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-750 text-white font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
               data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex"
               title="Copy command"
             >
@@ -266,9 +283,7 @@ const updatePrompt = "Please update the currently installed ADHD OS Skill. The n
         <p class="text-xs text-zinc-500 leading-relaxed mb-3">
           To force-overwrite or update the values later, send this prompt directly to your Agent:
         </p>
-        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono select-all leading-relaxed">
-          {updatePrompt}
-        </div>
+        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono select-all leading-relaxed whitespace-pre-line">{updatePrompt}</div>
       </div>
     </div>
 
