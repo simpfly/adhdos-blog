@@ -1,0 +1,269 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Agent Center - ADHD OS';
+const description = 'Integrate ADHD OS blog into your AI Assistant, no API Key needed, anonymous read-only.';
+
+const openApiSchema = JSON.stringify({
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ADHD OS Blog Knowledge Base API",
+    "version": "1.0.0"
+  },
+  "servers": [{ "url": "https://blog.adhdos.app" }],
+  "paths": {
+    "/api/knowledge.json": {
+      "get": {
+        "operationId": "getKnowledgeBase",
+        "summary": "Retrieve the full blog posts knowledge base",
+        "responses": {
+          "200": {
+            "description": "JSON array of articles with metadata and markdown content."
+          }
+        }
+      }
+    }
+  }
+}, null, 2);
+
+const agentPrompt = "Please check and install the ADHD OS Knowledge Base Skill: https://blog.adhdos.app/adhdos-skill/ Requirements: 1. Read and review SKILL.md and README.md first to ensure it only accesses the public read-only API of ADHD OS; 2. Tell me the directory and files you plan to write, do not use sudo, and do not overwrite other Skills; 3. Install to the user-level skills directory officially supported by your current Agent; 4. After installation, let me know if a restart or a new session is needed, and provide a verification question.";
+
+const updatePrompt = "Please update the currently installed ADHD OS Skill: https://blog.adhdos.app/adhdos-skill/ Locate the path of the loaded adhdos-kb/SKILL.md file in the current session first, let me know the old version and target path, and then overwrite it. Do not write updates to other Agents' directories.";
+---
+
+<BaseLayout title={title} description={description} lang="en">
+  <div class="max-w-3xl mx-auto pb-24 px-4">
+    <!-- Header -->
+    <div class="border-b border-black/5 pb-6 mb-10">
+      <div class="text-xs font-bold text-violet-dark uppercase tracking-wider mb-1">Agent Skills & API</div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900">Agent Center</h1>
+    </div>
+
+    <!-- Intro -->
+    <p class="text-zinc-600 text-base mb-10 leading-relaxed">
+      You can integrate the blog contents of ADHD OS (evidence-based guides for ADHD, ASD, AuDHD) into your AI Assistants (e.g. Claude, Gemini, Codex, Hermes) anonymously without any API Key.
+    </p>
+
+    <!-- Before & After Integration Demo -->
+    <div class="mb-12">
+      <h2 class="text-lg font-bold text-zinc-900 mb-6 text-center">Before & After Integration Comparison</h2>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Before -->
+        <div class="border border-zinc-200 bg-zinc-50/50 p-6 rounded-2xl opacity-75">
+          <div class="text-xs font-bold text-red-600 uppercase tracking-wider mb-3">Before (General LLM Output)</div>
+          <div class="text-xs text-zinc-400 mb-4 pb-2 border-b border-zinc-200">
+            Q: How to handle ADHD Task Paralysis?
+          </div>
+          <div class="text-xs text-zinc-600 space-y-2 leading-relaxed">
+            <p class="font-bold text-zinc-800">AI Assistant:</p>
+            <p>
+              Dealing with task paralysis is undeniably a major hurdle in this fast-paced modern life. We recommend that you:
+            </p>
+            <p>
+              1. Develop a highly structured long-term plan down to every hour;<br/>
+              2. Eliminate all distractions and force yourself to sit down and work;<br/>
+              3. Maintain a positive mindset and believe in yourself.<br/>
+              In short, procrastination can be fully overcome with strong willpower.
+            </p>
+            <p class="text-[10px] text-zinc-400 italic">
+              (Drawbacks: Heavy text wall, generic AI templates, lacks practical ADHD strategies, relies on willpower shaming)
+            </p>
+          </div>
+        </div>
+
+        <!-- After -->
+        <div class="border-2 border-brand-400 bg-white p-6 rounded-2xl shadow-sm">
+          <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-3">After (Agent with Knowledge Base)</div>
+          <div class="text-xs text-zinc-400 mb-4 pb-2 border-b border-zinc-200">
+            Q: How to handle ADHD Task Paralysis?
+          </div>
+          <div class="text-xs text-zinc-600 space-y-3 leading-relaxed">
+            <p class="font-bold text-zinc-800">AI Assistant:</p>
+            <p>
+              When encountering Task Paralysis, avoid forcing willpower. Try these **physical hacks** instead:
+            </p>
+            <ul class="list-disc pl-4 space-y-1.5">
+              <li><strong>Lower Activation Threshold</strong>: Do not aim to complete the task; just <strong>open the document and write 1 word</strong>.</li>
+              <li><strong>Body Doubling</strong>: Work alongside a friend or join a work session to borrow external dopamine.</li>
+              <li><strong>Break into Micro-actions</strong>: Subdivide tasks into <strong>micro-steps taking less than 3 minutes</strong> to reduce task friction.</li>
+            </ul>
+            <p class="text-[10px] text-zinc-500 pt-1">
+              Source: [《ADHD Task Paralysis SOS Guide》](https://blog.adhdos.app/adhd-task-paralysis-sos)
+            </p>
+            <p class="text-[10px] text-emerald-600 italic">
+              (Advantages: Clean line-spacing, bolded keywords for visual scanning, evidence-based coping hacks, no AI jargon, clear attribution)
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option 1: Chat Prompt -->
+    <div class="lens-card p-6 md:p-8 mb-8 bg-brand-50/10">
+      <h2 class="text-lg font-bold text-zinc-900 mb-2 flex items-center gap-2">
+        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet text-white text-[10px] font-bold">1</span>
+        Option 1: Paste Prompt directly to AI
+      </h2>
+      <p class="text-xs text-zinc-500 mb-4 leading-relaxed">
+        If your AI Assistant has file-writing privileges in its runtime workspace, copy and send this prompt to let the assistant install the Skill automatically:
+      </p>
+      
+      <div class="bg-zinc-50 border border-zinc-200 rounded-xl p-4 relative mb-4">
+        <p class="text-xs text-zinc-700 font-mono leading-relaxed select-all pr-20">{agentPrompt}</p>
+        <button 
+          class="copy-btn absolute top-3 right-3 text-xs bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer"
+          data-copy={agentPrompt}
+          data-copy-success="Copied"
+        >
+          Copy
+        </button>
+      </div>
+      <div class="flex gap-4 text-xs font-semibold">
+        <a href="/adhdos-skill/SKILL.md" target="_blank" class="text-violet-dark hover:underline">View SKILL.md Rules</a>
+      </div>
+    </div>
+
+    <!-- Option 2: Terminal One-click -->
+    <div class="lens-card p-6 md:p-8 mb-8">
+      <h2 class="text-lg font-bold text-zinc-900 mb-2 flex items-center gap-2">
+        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet text-white text-[10px] font-bold">2</span>
+        Option 2: One-click Install via Terminal
+      </h2>
+      <p class="text-xs text-zinc-500 mb-4 leading-relaxed">
+        If you are using a local Agent client, copy and run the terminal command for your respective platform:
+      </p>
+
+      <div class="space-y-4">
+        <!-- Claude -->
+        <div>
+          <span class="text-[11px] font-bold text-zinc-400 block mb-1">Claude Desktop</span>
+          <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
+            <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target claude</span>
+            <button class="copy-btn shrink-0 text-xs bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer" data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target claude" data-copy-success="Copied">Copy</button>
+          </div>
+        </div>
+
+        <!-- Codex -->
+        <div>
+          <span class="text-[11px] font-bold text-zinc-400 block mb-1">Codex Agent</span>
+          <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
+            <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex</span>
+            <button class="copy-btn shrink-0 text-xs bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer" data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex" data-copy-success="Copied">Copy</button>
+          </div>
+        </div>
+
+        <!-- Hermes -->
+        <div>
+          <span class="text-[11px] font-bold text-zinc-400 block mb-1">Hermes / General Agent</span>
+          <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
+            <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target agents</span>
+            <button class="copy-btn shrink-0 text-xs bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer" data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target agents" data-copy-success="Copied">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option 3: Data Feeds -->
+    <div class="lens-card p-6 md:p-8 mb-8">
+      <h2 class="text-lg font-bold text-zinc-900 mb-2 flex items-center gap-2">
+        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet text-white text-[10px] font-bold">3</span>
+        Option 3: Direct API & Content Feeds
+      </h2>
+      <p class="text-xs text-zinc-500 mb-4 leading-relaxed">
+        If you are building custom Retrieval pipelines, query these LLM-friendly endpoints directly:
+      </p>
+
+      <div class="space-y-3">
+        <!-- Index -->
+        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-2">
+          <div class="pr-4">
+            <span class="font-bold text-zinc-800 block">Knowledge Map Index (llms.txt)</span>
+            <span class="text-[11px] text-zinc-400">Markdown list maps summaries and paths for all 60+ blog articles</span>
+          </div>
+          <button class="copy-btn shrink-0 text-xs bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer" data-copy="https://blog.adhdos.app/llms.txt" data-copy-success="Copied">Copy</button>
+        </div>
+
+        <!-- Full -->
+        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-2">
+          <div class="pr-4">
+            <span class="font-bold text-zinc-800 block">Merged Markdown Package (llms-full.txt)</span>
+            <span class="text-[11px] text-zinc-400">Combines raw markdown body of all articles into a single stream</span>
+          </div>
+          <button class="copy-btn shrink-0 text-xs bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer" data-copy="https://blog.adhdos.app/llms-full.txt" data-copy-success="Copied">Copy</button>
+        </div>
+
+        <!-- JSON -->
+        <div class="flex justify-between items-center text-xs">
+          <div class="pr-4">
+            <span class="font-bold text-zinc-800 block">JSON Knowledge Base API (knowledge.json)</span>
+            <span class="text-[11px] text-zinc-400">Structured array returning article metadata alongside raw markdown body</span>
+          </div>
+          <button class="copy-btn shrink-0 text-xs bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer" data-copy="https://blog.adhdos.app/api/knowledge.json" data-copy-success="Copied">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verification & Overwrite Guides -->
+    <div class="grid md:grid-cols-2 gap-6 mb-12">
+      <!-- Validation -->
+      <div class="bg-zinc-50 border border-zinc-200 rounded-2xl p-6">
+        <h3 class="text-sm font-bold text-zinc-800 mb-2">How to Verify</h3>
+        <p class="text-xs text-zinc-500 leading-relaxed mb-3">
+          Restart the Agent session and ask the following test prompt. A successful setup outputs highlighted keypoints with article references:
+        </p>
+        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono select-all">
+          How is ADHD procrastination related to perfectionism, and what are the coping hacks?
+        </div>
+      </div>
+
+      <!-- Update -->
+      <div class="bg-zinc-50 border border-zinc-200 rounded-2xl p-6">
+        <h3 class="text-sm font-bold text-zinc-800 mb-2">How to Overwrite Update</h3>
+        <p class="text-xs text-zinc-500 leading-relaxed mb-3">
+          To force-overwrite or update the values later, send this prompt directly to your Agent:
+        </p>
+        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono select-all leading-relaxed">
+          {updatePrompt}
+        </div>
+      </div>
+    </div>
+
+    <!-- OpenAPI YAML -->
+    <div class="text-center text-xs text-zinc-400">
+      API schema aligns with OpenAPI standards.
+      <details class="mt-2 text-left bg-zinc-50 border border-zinc-200 rounded-xl p-4 font-mono select-all text-[10px] cursor-pointer inline-block w-full">
+        <summary class="text-zinc-500 hover:text-zinc-700 font-bold">Open mini OpenAPI JSON Definition</summary>
+        <pre class="mt-2 text-zinc-800 overflow-x-auto bg-zinc-50 border border-zinc-200 p-4 rounded-xl"><code set:text={openApiSchema}></code></pre>
+      </details>
+    </div>
+
+  </div>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.getAttribute('data-copy');
+      if (text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          const originalText = btn.textContent || 'Copy';
+          
+          btn.textContent = btn.getAttribute('data-copy-success') || 'Copied';
+          
+          btn.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-700');
+          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
+          
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('bg-emerald-50', 'border-emerald-300', 'text-emerald-700');
+            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
+          }, 1500);
+        } catch (err) {
+          console.error('Copy failed', err);
+        }
+      }
+    });
+  });
+</script>

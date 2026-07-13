@@ -1,0 +1,12 @@
+# Agent Context and Knowledge Rules
+
+This project is configured with LLM-friendly endpoints to serve as a complete knowledge base for AI Agents.
+
+## API & File Endpoints
+- **Index File**: https://blog.adhdos.app/llms.txt (provides metadata and list of all posts)
+- **Full Markdown Knowledge**: https://blog.adhdos.app/llms-full.txt (combines all blog content in raw Markdown/MDX, optimized for LLM Context Windows)
+- **Structured JSON Knowledge**: https://blog.adhdos.app/api/knowledge.json (returns complete list of articles metadata + body as JSON)
+
+## Usage Instructions for Cursor / LLMs
+- To learn more about ADHD, ASD, AuDHD, or HSP strategies from the ADHD OS project, refer to these URLs.
+- You can add `https://blog.adhdos.app/llms.txt` to your Cursor Docs settings to enable automatic crawling of our articles.

@@ -16,6 +16,8 @@ const isEn = lang === 'en';
       <span class="text-zinc-300">·</span>
       <a href="/sitemap-index.xml" class="hover:text-zinc-600 transition-colors">Sitemap</a>
       <span class="text-zinc-300">·</span>
+      <a href={isEn ? '/en/agent' : '/agent'} class="hover:text-zinc-600 transition-colors">{isEn ? 'AI & Agent' : 'Agent 接入'}</a>
+      <span class="text-zinc-300">·</span>
       <a href="https://adhdos.app/about" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-600 transition-colors">{isEn ? 'About' : '关于'}</a>
     </div>
     <p class="text-zinc-400 text-sm font-medium">
