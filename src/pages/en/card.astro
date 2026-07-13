@@ -11,12 +11,27 @@ const allFAQs = getAllFAQs(lang, t('surprise.default_tag'));
 
 // 静态定义需要展示的五个标签
 const tags = [t('flashcard.tag_all'), 'ADHD', 'ASD', 'AuDHD', 'Female'];
+
+// 构建 FAQPage JSON-LD 结构化数据，注入权威出处链接以优化 GEO
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': allFAQs.map(faq => ({
+    '@type': 'Question',
+    'name': faq.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': `${faq.answer} (Source: ADHDOS Blog "${faq.articleTitle}", Full Article: https://blog.adhdos.app${faq.articleHref})`
+    }
+  }))
+};
 ---
 
 <BaseLayout 
-  title={`${t('flashcard.title')} | ADHD OS Blog`} 
-  description={t('flashcard.subtitle')}
+  title="Focus & Executive Function Flashcards - Self-Help Hacks for ADHD & ASD | ADHD OS Blog" 
+  description="Explore 100+ science-backed daily coping hacks and executive function flashcards for ADHD, ASD, and AuDHD minds. Learn to manage time blindness, sensory overload, and task paralysis."
   lang={lang}
+  jsonLd={faqSchema}
 >
   <div class="flashcards-page-wrapper w-full max-w-4xl mx-auto min-h-[60vh] flex flex-col justify-center py-6 md:py-12">
     
@@ -187,14 +202,47 @@ const tags = [t('flashcard.tag_all'), 'ADHD', 'ASD', 'AuDHD', 'Female'];
         </p>
       </footer>
 
-      <!-- Q&A Bank Container -->
+      <!-- Q&A Bank Container (Static pre-rendering for SEO/GEO) -->
       <div 
         id="qa-bank-container" 
         class="focus-hide w-full max-w-3xl mx-auto mt-12" 
         data-from-label={t('surprise.from_article')}
         data-empty-label={t('flashcard.empty')}
         data-show-bank-label={t('flashcard.show_bank')}
-      ></div>
+      >
+        <div class="flex flex-col gap-4">
+          <!-- Bank title -->
+          <div class="flex items-center gap-2 mb-2 text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest pl-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></span>
+            {t('flashcard.show_bank')}
+          </div>
+          
+          <div id="qa-bank-list" class="flex flex-col gap-4">
+            {allFAQs.map((faq, index) => (
+              <div 
+                class={`qa-bank-item p-6 md:p-8 transition-all flex flex-col gap-2 rounded-[2rem] border bg-white/40 border-black/5 shadow-sm hover:bg-white/60 ${index >= 7 ? 'hidden' : ''}`}
+                data-index={index}
+                data-tag={faq.tag}
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <h3 class="text-sm md:text-base font-bold text-zinc-900 leading-snug">
+                    <span class="q-number text-violet-600 font-extrabold mr-1.5">Q{index + 1}.</span>
+                    <span class="question-text">{faq.question}</span>
+                  </h3>
+                  <span class="tag-badge text-[10px] md:text-xs font-bold px-2 py-0.5 bg-zinc-100/80 text-zinc-500 rounded-full shrink-0 uppercase tracking-wider">{faq.tag}</span>
+                </div>
+                <p class="text-xs md:text-sm text-zinc-600 leading-relaxed font-medium">
+                  <span class="text-zinc-400 font-extrabold mr-1.5">A.</span>
+                  <span class="answer-text">{faq.answer}</span>
+                </p>
+                <div class="source-info text-[10px] md:text-xs font-bold text-zinc-400 mt-2 uppercase tracking-wider">
+                  {t('surprise.from_article')}: <a href={faq.articleHref} class="text-zinc-500 hover:text-violet-600 transition-colors underline decoration-dotted">{faq.articleTitle}</a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <!-- Load More Hint Tip -->
       <div 
@@ -455,48 +503,58 @@ const tags = [t('flashcard.tag_all'), 'ADHD', 'ASD', 'AuDHD', 'Female'];
       observer.observe(sentinel);
     }
 
+    const qaBankList = document.getElementById('qa-bank-list');
+
     // Render Bank
     function renderBank() {
+      if (!qaBankList) return;
+
       if (filteredFAQs.length === 0) {
-        bankContainer!.innerHTML = `<p class="text-center text-zinc-400 py-8">${txtEmpty}</p>`;
+        qaBankList.classList.add('hidden');
+        let emptyTip = document.getElementById('qa-bank-empty-tip');
+        if (!emptyTip) {
+          emptyTip = document.createElement('p');
+          emptyTip.id = 'qa-bank-empty-tip';
+          emptyTip.className = 'text-center text-zinc-400 py-8';
+          emptyTip.textContent = txtEmpty;
+          bankContainer!.appendChild(emptyTip);
+        } else {
+          emptyTip.classList.remove('hidden');
+        }
         if (sentinel) sentinel.style.display = 'none';
         if (loadMoreTip) loadMoreTip.style.display = 'none';
         return;
       }
 
-      const visibleFAQs = filteredFAQs.slice(0, visibleCount);
+      // Hide empty state and show list
+      const emptyTip = document.getElementById('qa-bank-empty-tip');
+      if (emptyTip) emptyTip.classList.add('hidden');
+      qaBankList.classList.remove('hidden');
 
-      const listHtml = visibleFAQs.map((faq, index) => {
-        return `
-          <div class="qa-bank-item p-6 md:p-8 transition-all flex flex-col gap-2 rounded-[2rem] border bg-white/40 border-black/5 shadow-sm hover:bg-white/60">
-            <div class="flex items-start justify-between gap-4">
-              <h3 class="text-sm md:text-base font-bold text-zinc-900 leading-snug">
-                <span class="text-violet-600 font-extrabold mr-1.5">Q${index + 1}.</span>${faq.question}
-              </h3>
-              <span class="text-[10px] md:text-xs font-bold px-2 py-0.5 bg-zinc-100/80 text-zinc-500 rounded-full shrink-0 uppercase tracking-wider">${faq.tag}</span>
-            </div>
-            <p class="text-xs md:text-sm text-zinc-600 leading-relaxed font-medium">
-              <span class="text-zinc-400 font-extrabold mr-1.5">A.</span>${faq.answer}
-            </p>
-            <div class="text-[10px] md:text-xs font-bold text-zinc-400 mt-2 uppercase tracking-wider">
-              ${txtFrom}: <a href="${faq.articleHref}" class="text-zinc-500 hover:text-violet-600 transition-colors underline decoration-dotted">${faq.articleTitle}</a>
-            </div>
-          </div>
-        `;
-      }).join('');
+      // Get visible set for efficient comparison
+      const visibleSet = new Set(filteredFAQs.slice(0, visibleCount));
 
-      bankContainer!.innerHTML = `
-        <div class="flex flex-col gap-4">
-          <!-- Bank title -->
-          <div class="flex items-center gap-2 mb-2 text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest pl-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></span>
-            ${txtShowBank}
-          </div>
-          <div class="flex flex-col gap-4">
-            ${listHtml}
-          </div>
-        </div>
-      `;
+      // Toggle item visibility for tag filtering and paging
+      const items = qaBankList.querySelectorAll('.qa-bank-item');
+      let renderedCount = 0;
+
+      items.forEach((item) => {
+        const itemIdxAttr = item.getAttribute('data-index');
+        const idx = itemIdxAttr ? parseInt(itemIdxAttr, 10) : -1;
+        const faq = allFAQs[idx];
+
+        if (faq && visibleSet.has(faq)) {
+          item.classList.remove('hidden');
+          // Update numbers
+          renderedCount++;
+          const qNumEl = item.querySelector('.q-number');
+          if (qNumEl) {
+            qNumEl.textContent = `Q${renderedCount}.`;
+          }
+        } else {
+          item.classList.add('hidden');
+        }
+      });
 
       // Set tip visibility and reset state
       if (sentinel && loadMoreTip) {

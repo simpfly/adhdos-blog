@@ -24,9 +24,10 @@ interface Props {
   // 列表页不传，退化为站点级 meta。
   article?: ArticleMeta;
   lang?: 'zh' | 'en';
+  jsonLd?: Record<string, any> | Record<string, any>[]; // 支持传入自定义 JSON-LD
 }
 
-const { title, description, article, lang } = Astro.props;
+const { title, description, article, lang, jsonLd } = Astro.props;
 const resolvedLang = lang ?? getLangFromUrl(Astro.url);
 const locale = resolvedLang === 'en' ? 'en_US' : 'zh_CN';
 
@@ -101,6 +102,12 @@ const articleSchema = article
 
     {articleSchema && (
       <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    )}
+
+    {jsonLd && (
+      Array.isArray(jsonLd) 
+        ? jsonLd.map(schema => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)
+        : <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
 
     <link rel="icon" href="https://adhdos.app/assets/icon_ADHDOS.png" />
