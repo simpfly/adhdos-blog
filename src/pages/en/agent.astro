@@ -6,21 +6,14 @@ const description = 'Integrate ADHD OS blog into your AI Assistant, no API Key n
 
 const openApiSchema = JSON.stringify({
   "openapi": "3.1.0",
-  "info": {
-    "title": "ADHD OS Blog Knowledge Base API",
-    "version": "1.0.0"
-  },
+  "info": { "title": "ADHD OS Blog Knowledge Base API", "version": "1.0.0" },
   "servers": [{ "url": "https://blog.adhdos.app" }],
   "paths": {
     "/api/knowledge.json": {
       "get": {
         "operationId": "getKnowledgeBase",
         "summary": "Retrieve the full blog posts knowledge base",
-        "responses": {
-          "200": {
-            "description": "JSON array of articles with metadata and markdown content."
-          }
-        }
+        "responses": { "200": { "description": "JSON array of articles with metadata and markdown content." } }
       }
     }
   }
@@ -51,6 +44,17 @@ const testQuestion = "How is ADHD procrastination related to perfectionism, and 
 ---
 
 <BaseLayout title={title} description={description} lang="en">
+  <!-- SVG symbol definitions — defined once, referenced throughout -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="hidden" aria-hidden="true">
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6 9 17l-5-5"/>
+    </symbol>
+  </svg>
+
   <div class="max-w-3xl mx-auto pb-24 px-4">
     <!-- Header -->
     <div class="border-b border-black/5 pb-6 mb-10">
@@ -63,63 +67,48 @@ const testQuestion = "How is ADHD procrastination related to perfectionism, and 
       You can integrate the blog contents of ADHD OS (evidence-based guides for ADHD, ASD, AuDHD) into your AI Assistants (e.g. Claude, Gemini, Codex, Hermes) anonymously without any API Key.
     </p>
 
-    <!-- Before & After Integration Demo -->
+    <!-- Before & After -->
     <div class="mb-12">
       <h2 class="text-lg font-bold text-zinc-900 mb-6 text-center">Before & After Integration Comparison</h2>
-      
       <div class="grid md:grid-cols-2 gap-6">
         <!-- Before -->
         <div class="border border-zinc-200 bg-zinc-50/50 p-6 rounded-2xl opacity-75">
           <div class="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-3">Before (General LLM Output)</div>
-          <div class="text-xs text-zinc-400 mb-4 pb-2 border-b border-zinc-200">
-            Q: How to handle ADHD Task Paralysis?
-          </div>
+          <div class="text-xs text-zinc-400 mb-4 pb-2 border-b border-zinc-200">Q: How to handle ADHD Task Paralysis?</div>
           <div class="text-xs text-zinc-600 space-y-2 leading-relaxed">
             <p class="font-bold text-zinc-800">AI Assistant:</p>
-            <p>
-              Dealing with task paralysis is undeniably a major hurdle in this fast-paced modern life. We recommend that you:
-            </p>
+            <p>Dealing with task paralysis is undeniably a major hurdle. We recommend that you:</p>
             <p>
               1. Develop a highly structured long-term plan down to every hour;<br/>
               2. Eliminate all distractions and force yourself to sit down and work;<br/>
               3. Maintain a positive mindset and believe in yourself.<br/>
               In short, procrastination can be fully overcome with strong willpower.
             </p>
-            <p class="text-[10px] text-zinc-400 italic">
-              (Drawbacks: Heavy text wall, generic AI templates, lacks practical ADHD strategies, relies on willpower shaming)
-            </p>
+            <p class="text-[10px] text-zinc-400 italic">(Drawbacks: Heavy text wall, generic AI templates, lacks practical ADHD strategies, relies on willpower shaming)</p>
           </div>
         </div>
 
         <!-- After -->
         <div class="border-2 border-violet bg-white p-6 rounded-2xl shadow-sm">
           <div class="text-xs font-bold text-violet-dark uppercase tracking-wider mb-3">After (Agent with Knowledge Base)</div>
-          <div class="text-xs text-zinc-400 mb-4 pb-2 border-b border-zinc-200">
-            Q: How to handle ADHD Task Paralysis?
-          </div>
+          <div class="text-xs text-zinc-400 mb-4 pb-2 border-b border-zinc-200">Q: How to handle ADHD Task Paralysis?</div>
           <div class="text-xs text-zinc-600 space-y-3 leading-relaxed">
             <p class="font-bold text-zinc-800">AI Assistant:</p>
-            <p>
-              When encountering Task Paralysis, avoid forcing willpower. Try these **physical hacks** instead:
-            </p>
+            <p>When encountering Task Paralysis, avoid forcing willpower. Try these <strong>physical hacks</strong> instead:</p>
             <ul class="list-disc pl-4 space-y-1.5">
               <li><strong>Lower Activation Threshold</strong>: Do not aim to complete the task; just <strong>open the document and write 1 word</strong>.</li>
               <li><strong>Body Doubling</strong>: Work alongside a friend or join a work session to borrow external dopamine.</li>
               <li><strong>Break into Micro-actions</strong>: Subdivide tasks into <strong>micro-steps taking less than 3 minutes</strong> to reduce task friction.</li>
             </ul>
-            <p class="text-[10px] text-zinc-500 pt-1">
-              Source: [《ADHD Task Paralysis SOS Guide》](https://blog.adhdos.app/adhd-task-paralysis-sos)
-            </p>
-            <p class="text-[10px] text-violet-dark italic">
-              (Advantages: Clean line-spacing, bolded keywords for visual scanning, evidence-based coping hacks, no AI jargon, clear attribution)
-            </p>
+            <p class="text-[10px] text-zinc-500 pt-1">Source: [《ADHD Task Paralysis SOS Guide》](https://blog.adhdos.app/adhd-task-paralysis-sos)</p>
+            <p class="text-[10px] text-violet-dark italic">(Advantages: Clean spacing, bolded keywords, evidence-based hacks, no AI jargon, clear attribution)</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Option 1: Chat Prompt -->
-    <div class="lens-card p-6 md:p-8 mb-8 bg-brand-50/10">
+    <!-- Option 1 -->
+    <div class="lens-card p-6 md:p-8 mb-8 bg-brand-50/10" style="content-visibility:auto;contain-intrinsic-size:auto 240px">
       <h2 class="text-lg font-bold text-zinc-900 mb-2 flex items-center gap-2">
         <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet text-white text-[10px] font-bold">1</span>
         Option 1: Paste Prompt directly to AI
@@ -127,25 +116,19 @@ const testQuestion = "How is ADHD procrastination related to perfectionism, and 
       <p class="text-xs text-zinc-500 mb-4 leading-relaxed">
         If your AI Assistant has file-writing privileges in its runtime workspace, copy and send this prompt to let the assistant install the Skill automatically:
       </p>
-      
       <div class="bg-zinc-50 border border-zinc-200 rounded-xl p-4 relative mb-4">
-        <p class="text-xs text-zinc-700 font-mono leading-relaxed select-all pr-12 whitespace-pre-line">{agentPrompt}</p>
-        <button 
-          class="copy-btn absolute top-3 right-3 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
-          data-copy={agentPrompt}
-          title="Copy prompt"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
+        <p class="text-xs text-zinc-700 font-mono leading-relaxed pr-12 whitespace-pre-line">{agentPrompt}</p>
+        <button class="copy-btn absolute top-3 right-3 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-colors cursor-pointer flex items-center justify-center"
+          data-copy={agentPrompt} title="Copy prompt">
+          <svg width="14" height="14" class="copy-icon"><use href="#icon-copy"/></svg>
+          <svg width="14" height="14" class="check-icon hidden"><use href="#icon-check"/></svg>
         </button>
       </div>
-      <div class="flex gap-4 text-xs font-semibold">
-        <a href="/adhdos-skill/SKILL.md" target="_blank" class="text-violet-dark hover:underline">View SKILL.md Rules</a>
-      </div>
+      <a href="/adhdos-skill/SKILL.md" target="_blank" class="text-xs font-semibold text-violet-dark hover:underline">View SKILL.md Rules</a>
     </div>
 
-    <!-- Option 2: Terminal One-click -->
-    <div class="lens-card p-6 md:p-8 mb-8">
+    <!-- Option 2 -->
+    <div class="lens-card p-6 md:p-8 mb-8" style="content-visibility:auto;contain-intrinsic-size:auto 260px">
       <h2 class="text-lg font-bold text-zinc-900 mb-2 flex items-center gap-2">
         <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet text-white text-[10px] font-bold">2</span>
         Option 2: One-click Install via Terminal
@@ -153,144 +136,84 @@ const testQuestion = "How is ADHD procrastination related to perfectionism, and 
       <p class="text-xs text-zinc-500 mb-4 leading-relaxed">
         If you are using a local Agent client, copy and run the terminal command for your respective platform:
       </p>
-
       <div class="space-y-4">
-        <!-- Claude -->
-        <div>
-          <span class="text-[11px] font-bold text-zinc-400 block mb-1">Claude Desktop</span>
-          <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
-            <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target claude</span>
-            <button 
-              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
-              data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target claude"
-              title="Copy command"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
-            </button>
+        {[
+          { label: 'Claude Desktop', target: 'claude' },
+          { label: 'Codex Agent',    target: 'codex'  },
+          { label: 'Hermes / General Agent', target: 'agents' },
+        ].map(({ label, target }) => (
+          <div>
+            <span class="text-[11px] font-bold text-zinc-400 block mb-1">{label}</span>
+            <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
+              <span class="overflow-x-auto whitespace-nowrap text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target {target}</span>
+              <button class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-colors cursor-pointer flex items-center justify-center"
+                data-copy={`bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target ${target}`} title="Copy command">
+                <svg width="14" height="14" class="copy-icon"><use href="#icon-copy"/></svg>
+                <svg width="14" height="14" class="check-icon hidden"><use href="#icon-check"/></svg>
+              </button>
+            </div>
           </div>
-        </div>
-
-        <!-- Codex -->
-        <div>
-          <span class="text-[11px] font-bold text-zinc-400 block mb-1">Codex Agent</span>
-          <div class="bg-zinc-50 border border-zinc-200 text-zinc-850 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
-            <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex</span>
-            <button 
-              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
-              data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target codex"
-              title="Copy command"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Hermes -->
-        <div>
-          <span class="text-[11px] font-bold text-zinc-400 block mb-1">Hermes / General Agent</span>
-          <div class="bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
-            <span class="overflow-x-auto whitespace-nowrap select-all text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target agents</span>
-            <button 
-              class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-700 font-bold px-3 py-1.5 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
-              data-copy="bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target agents"
-              title="Copy command"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
 
-    <!-- Option 3: Data Feeds -->
-    <div class="lens-card p-6 md:p-8 mb-8">
+    <!-- Option 3 -->
+    <div class="lens-card p-6 md:p-8 mb-8" style="content-visibility:auto;contain-intrinsic-size:auto 220px">
       <h2 class="text-lg font-bold text-zinc-900 mb-2 flex items-center gap-2">
         <span class="flex h-5 w-5 items-center justify-center rounded-full bg-violet text-white text-[10px] font-bold">3</span>
         Option 3: Direct API & Content Feeds
       </h2>
       <p class="text-xs text-zinc-500 mb-4 leading-relaxed">
-        If you are building custom Retrieval pipelines, click the hyperlinks below to query them, or copy via buttons:
+        If you are building custom Retrieval pipelines, click the hyperlinks below or copy via buttons:
       </p>
-
       <div class="space-y-3">
-        <!-- Index -->
-        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-3">
-          <div class="pr-4">
-            <span class="font-bold text-zinc-800 block">Knowledge Map Index (llms.txt)</span>
-            <span class="text-[11px] text-zinc-400 block mb-1">Markdown list maps summaries and paths for all 60+ blog articles</span>
-            <a href="/llms.txt" target="_blank" class="text-[11px] text-violet-dark hover:underline font-mono">https://blog.adhdos.app/llms.txt</a>
+        {[
+          { name: 'Knowledge Map Index (llms.txt)', desc: 'Markdown list maps summaries and paths for all 60+ blog articles', href: '/llms.txt', url: 'https://blog.adhdos.app/llms.txt' },
+          { name: 'Merged Markdown Package (llms-full.txt)', desc: 'Combines raw markdown body of all articles into a single stream', href: '/llms-full.txt', url: 'https://blog.adhdos.app/llms-full.txt' },
+          { name: 'JSON Knowledge Base API (knowledge.json)', desc: 'Structured array returning article metadata alongside raw markdown body', href: '/api/knowledge.json', url: 'https://blog.adhdos.app/api/knowledge.json' },
+        ].map(({ name, desc, href, url }, i) => (
+          <div class={`flex justify-between items-center text-xs ${i < 2 ? 'border-b border-black/5 pb-3' : ''}`}>
+            <div class="pr-4">
+              <span class="font-bold text-zinc-800 block">{name}</span>
+              <span class="text-[11px] text-zinc-400 block mb-1">{desc}</span>
+              <a href={href} target="_blank" class="text-[11px] text-violet-dark hover:underline font-mono">{url}</a>
+            </div>
+            <button class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-colors cursor-pointer flex items-center justify-center"
+              data-copy={url} title="Copy URL">
+              <svg width="14" height="14" class="copy-icon"><use href="#icon-copy"/></svg>
+              <svg width="14" height="14" class="check-icon hidden"><use href="#icon-check"/></svg>
+            </button>
           </div>
-          <button 
-            class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
-            data-copy="https://blog.adhdos.app/llms.txt"
-            title="Copy URL"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
-          </button>
-        </div>
-
-        <!-- Full -->
-        <div class="flex justify-between items-center text-xs border-b border-black/5 pb-3">
-          <div class="pr-4">
-            <span class="font-bold text-zinc-800 block">Merged Markdown Package (llms-full.txt)</span>
-            <span class="text-[11px] text-zinc-400 block mb-1">Combines raw markdown body of all articles into a single stream</span>
-            <a href="/llms-full.txt" target="_blank" class="text-[11px] text-violet-dark hover:underline font-mono">https://blog.adhdos.app/llms-full.txt</a>
-          </div>
-          <button 
-            class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
-            data-copy="https://blog.adhdos.app/llms-full.txt"
-            title="Copy URL"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
-          </button>
-        </div>
-
-        <!-- JSON -->
-        <div class="flex justify-between items-center text-xs">
-          <div class="pr-4">
-            <span class="font-bold text-zinc-800 block">JSON Knowledge Base API (knowledge.json)</span>
-            <span class="text-[11px] text-zinc-400 block mb-1">Structured array returning article metadata alongside raw markdown body</span>
-            <a href="/api/knowledge.json" target="_blank" class="text-[11px] text-violet-dark hover:underline font-mono">https://blog.adhdos.app/api/knowledge.json</a>
-          </div>
-          <button 
-            class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center" 
-            data-copy="https://blog.adhdos.app/api/knowledge.json"
-            title="Copy URL"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
-          </button>
-        </div>
+        ))}
       </div>
     </div>
 
-    <!-- Verification & Overwrite Guides -->
-    <div class="grid md:grid-cols-2 gap-6 mb-12">
-      <!-- Validation -->
+    <!-- Verify + Update -->
+    <div class="grid md:grid-cols-2 gap-6 mb-12" style="content-visibility:auto;contain-intrinsic-size:auto 200px">
       <div class="bg-zinc-50 border border-zinc-200 rounded-2xl p-6">
         <h3 class="text-sm font-bold text-zinc-800 mb-2">How to Verify</h3>
         <p class="text-xs text-zinc-500 leading-relaxed mb-3">
-          Restart the Agent session and ask the following test prompt. A successful setup outputs highlighted keypoints with article references:
+          Restart the Agent session and try any of the questions below. A successful setup outputs bolded keypoints, structured sections, and article references:
         </p>
-        <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono relative pr-12 whitespace-pre-line">
-          <span>{testQuestion}</span>
-          <button 
-            class="copy-btn absolute top-2 right-2 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
-            data-copy={testQuestion}
-            title="Copy question"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
-          </button>
+        <div class="space-y-2">
+          {[
+            { tag: 'ADHD', q: 'How is ADHD procrastination related to perfectionism, and what are the coping hacks?' },
+            { tag: 'ASD', q: 'Why do I feel completely drained after socializing? How can I recharge my social battery quickly?' },
+            { tag: 'Women ND', q: 'Why do ADHD symptoms worsen around the menstrual cycle? What strategies help?' },
+          ].map(({ tag, q }) => (
+            <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono relative pr-10">
+              <span class="inline-block text-[10px] font-bold text-violet-dark bg-violet/8 rounded px-1 py-0.5 mb-1">{tag}</span>
+              <p class="leading-relaxed">{q}</p>
+              <button class="copy-btn absolute top-2.5 right-2 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-colors cursor-pointer flex items-center justify-center"
+                data-copy={q} title="Copy question">
+                <svg width="14" height="14" class="copy-icon"><use href="#icon-copy"/></svg>
+                <svg width="14" height="14" class="check-icon hidden"><use href="#icon-check"/></svg>
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 
-      <!-- Update -->
       <div class="bg-zinc-50 border border-zinc-200 rounded-2xl p-6">
         <h3 class="text-sm font-bold text-zinc-800 mb-2">How to Overwrite Update</h3>
         <p class="text-xs text-zinc-500 leading-relaxed mb-3">
@@ -298,61 +221,48 @@ const testQuestion = "How is ADHD procrastination related to perfectionism, and 
         </p>
         <div class="bg-white border border-zinc-200 text-zinc-700 text-xs p-3 rounded-lg font-mono relative pr-12 whitespace-pre-line leading-relaxed">
           <span>{updatePrompt}</span>
-          <button 
-            class="copy-btn absolute top-2 right-2 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
-            data-copy={updatePrompt}
-            title="Copy update prompt"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="copy-icon"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="check-icon hidden"><path d="M20 6 9 17l-5-5"/></svg>
+          <button class="copy-btn absolute top-2 right-2 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 transition-colors cursor-pointer flex items-center justify-center"
+            data-copy={updatePrompt} title="Copy update prompt">
+            <svg width="14" height="14" class="copy-icon"><use href="#icon-copy"/></svg>
+            <svg width="14" height="14" class="check-icon hidden"><use href="#icon-check"/></svg>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- OpenAPI YAML -->
+    <!-- OpenAPI -->
     <div class="text-center text-xs text-zinc-400">
       API schema aligns with OpenAPI standards.
-      <details class="mt-2 text-left bg-zinc-50 border border-zinc-200 rounded-xl p-4 font-mono select-all text-[10px] cursor-pointer inline-block w-full">
+      <details class="mt-2 text-left bg-zinc-50 border border-zinc-200 rounded-xl p-4 font-mono text-[10px] cursor-pointer inline-block w-full">
         <summary class="text-zinc-500 hover:text-zinc-700 font-bold">Open mini OpenAPI JSON Definition</summary>
         <pre class="mt-2 text-zinc-800 overflow-x-auto bg-zinc-50 border border-zinc-200 p-4 rounded-xl"><code set:text={openApiSchema}></code></pre>
       </details>
     </div>
-
   </div>
 </BaseLayout>
 
 <script>
-  document.querySelectorAll('.copy-btn').forEach(btn => {
+  document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const text = btn.getAttribute('data-copy');
-      if (text) {
-        try {
-          await navigator.clipboard.writeText(text);
-          
-          const copyIcon = btn.querySelector('.copy-icon');
-          const checkIcon = btn.querySelector('.check-icon');
-          
-          if (copyIcon && checkIcon) {
-            copyIcon.classList.add('hidden');
-            checkIcon.classList.remove('hidden');
-          }
-          
-          btn.classList.add('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
-          
-          setTimeout(() => {
-            if (copyIcon && checkIcon) {
-              copyIcon.classList.remove('hidden');
-              checkIcon.classList.add('hidden');
-            }
-            btn.classList.remove('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
-          }, 1500);
-        } catch (err) {
-          console.error('Copy failed', err);
-        }
+      const text = btn.dataset.copy;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const copyIcon = btn.querySelector<SVGElement>('.copy-icon');
+        const checkIcon = btn.querySelector<SVGElement>('.check-icon');
+        copyIcon?.classList.add('hidden');
+        checkIcon?.classList.remove('hidden');
+        btn.classList.add('bg-violet/10', 'border-violet/30', 'text-violet-dark');
+        btn.classList.remove('text-zinc-500', 'border-zinc-200');
+        setTimeout(() => {
+          copyIcon?.classList.remove('hidden');
+          checkIcon?.classList.add('hidden');
+          btn.classList.remove('bg-violet/10', 'border-violet/30', 'text-violet-dark');
+          btn.classList.add('text-zinc-500', 'border-zinc-200');
+        }, 1500);
+      } catch {
+        // clipboard not available
       }
     });
   });
