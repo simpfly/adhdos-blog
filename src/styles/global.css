@@ -139,6 +139,46 @@
     font-style: normal !important;
     border-left-width: 4px !important;
   }
+
+  /* ===== 参考文献卡片排版（神经多样性包容性阅读视廊） ===== */
+  .reference-list {
+    background: rgba(139, 92, 246, 0.03) !important;
+    border: 1px solid rgba(139, 92, 246, 0.08) !important;
+    border-radius: 1.25rem;
+    padding: 1.5rem !important;
+    margin-top: 3.5rem !important;
+  }
+
+  .reference-list h2,
+  .reference-list h3 {
+    margin-top: 0 !important;
+    margin-bottom: 1rem !important;
+    font-size: 1.125rem !important;
+    font-weight: 800 !important;
+    color: var(--color-ink) !important;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+    padding-bottom: 0.5rem;
+  }
+
+  .reference-list ol {
+    margin: 0 !important;
+    padding-left: 1.25rem !important;
+  }
+
+  .reference-list li {
+    font-size: 0.85rem !important;
+    line-height: 1.75 !important;
+    margin-top: 0.6rem !important;
+    margin-bottom: 0.6rem !important;
+    color: var(--color-ink) !important;
+    opacity: 0.9;
+  }
+
+  .reference-list a {
+    color: var(--color-violet-dark) !important;
+    text-decoration: underline !important;
+    font-weight: 600 !important;
+  }
 }
 
 /* Anchor link offset so headings aren't hidden behind the sticky header */

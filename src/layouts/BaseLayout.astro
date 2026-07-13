@@ -39,6 +39,7 @@ const ogImage = article?.heroImage
 const canonicalURL = new URL(Astro.url.pathname, SITE).href;
 
 // Article JSON-LD（仅文章页生成）
+const publisherId = `${BRAND_ASSETS}/#organization`;
 const articleSchema = article
   ? {
       '@context': 'https://schema.org',
@@ -48,10 +49,27 @@ const articleSchema = article
       image: ogImage,
       datePublished: article.pubDate.toISOString(),
       ...(article.updatedDate ? { dateModified: article.updatedDate.toISOString() } : {}),
-      author: { '@type': 'Organization', name: 'ADHD OS' },
-      publisher: { '@type': 'Organization', name: 'ADHD OS', logo: { '@type': 'ImageObject', url: `${BRAND_ASSETS}/assets/icon_ADHDOS.png` } },
+      author: {
+        '@type': 'Person',
+        name: resolvedLang === 'en' ? 'ADHD OS Team' : 'ADHD OS 团队',
+        url: BRAND_ASSETS
+      },
+      publisher: {
+        '@type': 'Organization',
+        '@id': publisherId,
+        name: 'ADHD OS',
+        url: BRAND_ASSETS,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${BRAND_ASSETS}/assets/icon_ADHDOS.png`
+        }
+      },
       mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalURL },
       inLanguage: resolvedLang === 'en' ? 'en-US' : 'zh-CN',
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['h1', '.prose > p:first-of-type']
+      }
     }
   : null;
 ---

@@ -7,9 +7,12 @@ interface Props {
 }
 const { questions } = Astro.props;
 
+const isEn = Astro.url.pathname.startsWith('/en/') || Astro.url.pathname.startsWith('/en');
 const schema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
+  "inLanguage": isEn ? "en-US" : "zh-CN",
+  "mainEntityOfPage": Astro.url.href,
   "mainEntity": questions.map(q => ({
     "@type": "Question",
     "name": q.question,
