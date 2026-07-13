@@ -9,18 +9,8 @@ const t = useTranslations(lang);
 // 在服务端获取所有问答数据
 const allFAQs = getAllFAQs(lang, t('surprise.default_tag'));
 
-// 收集所有去重后的标签，并拼装上“全部”
-const uniqueTags = [...new Set(allFAQs.map(item => item.tag).filter(Boolean))];
-const tags = [t('flashcard.tag_all'), ...uniqueTags];
-
-// Priority tags to show by default
-const PRIORITY_KEYWORDS = ['ADHD', 'ASD', 'AuDHD', 'Female', 'Women'];
-const isPriorityTag = (tag: string) =>
-  tag === t('flashcard.tag_all') ||
-  PRIORITY_KEYWORDS.some(kw => tag.includes(kw));
-
-const visibleTags = tags.filter(isPriorityTag);
-const moreTags = tags.filter(t => !isPriorityTag(t));
+// 静态定义需要展示的五个标签
+const tags = [t('flashcard.tag_all'), 'ADHD', 'ASD', 'AuDHD', 'Female'];
 ---
 
 <BaseLayout 
@@ -52,9 +42,9 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
     </header>
 
     <!-- Tag 过滤器（专注模式下隐藏，折叠式设计） -->
+    <!-- Tag Filter (only show specified 5 tags) -->
     <nav class="focus-hide tag-filter-nav flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-8 md:mb-10 text-xs md:text-sm font-bold" aria-label="Tag Filter">
-      {/* Default visible priority tags */}
-      {visibleTags.map((tag, idx) => (
+      {tags.map((tag, idx) => (
         <button
           type="button"
           class={`tag-filter-btn pb-1 border-b-2 transition-all cursor-pointer select-none ${
@@ -67,43 +57,6 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
           {tag}
         </button>
       ))}
-
-      {/* More button + hidden tags */}
-      {moreTags.length > 0 && (
-        <div class="tag-more-wrapper relative inline-flex items-center">
-          <button
-            id="tag-more-btn"
-            type="button"
-            aria-expanded="false"
-            aria-controls="tag-more-panel"
-            class="tag-more-toggle pb-1 border-b-2 border-transparent text-zinc-400 hover:text-zinc-700 transition-all cursor-pointer select-none flex items-center gap-0.5"
-          >
-            <span id="tag-more-label">{t('flashcard.more')}</span>
-            <span id="tag-more-arrow" class="inline-block transition-transform duration-200" aria-hidden="true">▾</span>
-          </button>
-
-          {/* Dropdown panel */}
-          <div
-            id="tag-more-panel"
-            class="tag-more-panel hidden absolute top-full left-1/2 -translate-x-1/2 mt-3 z-20"
-          >
-            <div class="flex justify-center mb-1">
-              <span class="w-2 h-2 bg-white border-l border-t border-black/8 rotate-45 -mb-1.5 shadow-[-1px_-1px_0_rgba(0,0,0,0.06)]"></span>
-            </div>
-            <div class="flex flex-col gap-1 bg-white/90 backdrop-blur-xl border border-black/8 rounded-2xl shadow-lg py-2 px-1 min-w-[6rem]">
-              {moreTags.map(tag => (
-                <button
-                  type="button"
-                  class="tag-filter-btn tag-more-item w-full text-left px-3 py-1.5 rounded-xl text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/70 transition-all cursor-pointer select-none border-b-0 border-transparent whitespace-nowrap"
-                  data-tag={tag}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </nav>
 
     <!-- 闪卡主容器 (页面更宽裕：升级为 max-w-3xl) -->
@@ -115,6 +68,8 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
         class="lens-card relative w-full min-h-[380px] p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden bg-white/70 backdrop-blur-xl border border-black/5 rounded-[2.5rem] shadow-sm select-none"
         data-faqs={JSON.stringify(allFAQs)}
         data-tag-all-label={t('flashcard.tag_all')}
+        data-more-label={t('flashcard.more')}
+        data-collapse-label={t('flashcard.collapse')}
       >
         <!-- Card header metadata -->
         <header class="flex items-center justify-between min-h-[32px] mb-2">
@@ -357,6 +312,7 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
     const sentinel = document.getElementById('bank-sentinel');
     const contentArea = document.getElementById('card-content-area');
     const filterButtons = document.querySelectorAll('.tag-filter-btn');
+
 
     if (
       !card || !questionEl || !answerEl || !tagEl || !articleLinkEl || 
@@ -636,6 +592,7 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
       }
     }
 
+    // ---- Bind Tag Filter Click ----
     filterButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLButtonElement;
@@ -650,6 +607,14 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
 
         if (selectedTag === 'all') {
           filteredFAQs = [...allFAQs];
+        } else if (selectedTag === 'Female') {
+          filteredFAQs = allFAQs.filter((faq: any) => 
+            faq.tag && (
+              faq.tag.toLowerCase().includes('female') || 
+              faq.tag.toLowerCase().includes('women') || 
+              faq.tag.toLowerCase().includes('woman')
+            )
+          );
         } else {
           filteredFAQs = allFAQs.filter((faq: any) => faq.tag === selectedTag);
         }

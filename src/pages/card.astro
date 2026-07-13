@@ -9,18 +9,8 @@ const t = useTranslations(lang);
 // 在服务端获取所有问答数据
 const allFAQs = getAllFAQs(lang, t('surprise.default_tag'));
 
-// 收集所有去重后的标签，并拼装上“全部”
-const uniqueTags = [...new Set(allFAQs.map(item => item.tag).filter(Boolean))];
-const tags = [t('flashcard.tag_all'), ...uniqueTags];
-
-// 优先展示的标签关键词（默认可见）
-const PRIORITY_KEYWORDS = ['ADHD', 'ASD', 'AuDHD', '女性'];
-const isPriorityTag = (tag: string) =>
-  tag === t('flashcard.tag_all') ||
-  PRIORITY_KEYWORDS.some(kw => tag.includes(kw));
-
-const visibleTags = tags.filter(isPriorityTag);
-const moreTags = tags.filter(t => !isPriorityTag(t));
+// 静态定义需要展示的五个标签
+const tags = [t('flashcard.tag_all'), 'ADHD', 'ASD', 'AuDHD', '女性'];
 ---
 
 <BaseLayout 
@@ -52,9 +42,9 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
     </header>
 
     <!-- Tag 过滤器（专注模式下隐藏，折叠式设计） -->
+    <!-- Tag 过滤器（专注模式下隐藏，仅显示指定的 5 个标签） -->
     <nav class="focus-hide tag-filter-nav flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-8 md:mb-10 text-xs md:text-sm font-bold" aria-label="Tag Filter">
-      {/* 默认可见的优先标签 */}
-      {visibleTags.map((tag, idx) => (
+      {tags.map((tag, idx) => (
         <button
           type="button"
           class={`tag-filter-btn pb-1 border-b-2 transition-all cursor-pointer select-none ${
@@ -67,44 +57,6 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
           {tag}
         </button>
       ))}
-
-      {/* 更多按鈕 + 隐藏标签组 */}
-      {moreTags.length > 0 && (
-        <div class="tag-more-wrapper relative inline-flex items-center">
-          <button
-            id="tag-more-btn"
-            type="button"
-            aria-expanded="false"
-            aria-controls="tag-more-panel"
-            class="tag-more-toggle pb-1 border-b-2 border-transparent text-zinc-400 hover:text-zinc-700 transition-all cursor-pointer select-none flex items-center gap-0.5"
-          >
-            <span id="tag-more-label">{t('flashcard.more')}</span>
-            <span id="tag-more-arrow" class="inline-block transition-transform duration-200" aria-hidden="true">▾</span>
-          </button>
-
-          {/* 下拉面板 */}
-          <div
-            id="tag-more-panel"
-            class="tag-more-panel hidden absolute top-full left-1/2 -translate-x-1/2 mt-3 z-20"
-          >
-            {/* 连接三角 */}
-            <div class="flex justify-center mb-1">
-              <span class="w-2 h-2 bg-white border-l border-t border-black/8 rotate-45 -mb-1.5 shadow-[-1px_-1px_0_rgba(0,0,0,0.06)]"></span>
-            </div>
-            <div class="flex flex-col gap-1 bg-white/90 backdrop-blur-xl border border-black/8 rounded-2xl shadow-lg py-2 px-1 min-w-[6rem]">
-              {moreTags.map(tag => (
-                <button
-                  type="button"
-                  class="tag-filter-btn tag-more-item w-full text-left px-3 py-1.5 rounded-xl text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/70 transition-all cursor-pointer select-none border-b-0 border-transparent whitespace-nowrap"
-                  data-tag={tag}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </nav>
 
     <!-- 闪卡主容器 (页面更宽裕：升级为 max-w-3xl) -->
@@ -116,6 +68,8 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
         class="lens-card relative w-full min-h-[380px] p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-hidden bg-white/70 backdrop-blur-xl border border-black/5 rounded-[2.5rem] shadow-sm select-none"
         data-faqs={JSON.stringify(allFAQs)}
         data-tag-all-label={t('flashcard.tag_all')}
+        data-more-label={t('flashcard.more')}
+        data-collapse-label={t('flashcard.collapse')}
       >
         <!-- 卡片头部元数据 (无横线极简设计) -->
         <header class="flex items-center justify-between min-h-[32px] mb-2">
@@ -332,31 +286,6 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
     display: flex !important;
   }
 
-  /* 更多 ▾ 下拉面板动画 */
-  .tag-more-panel {
-    transform-origin: top center;
-  }
-  .tag-more-panel.entering {
-    animation: panelFadeIn 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-  .tag-more-panel.leaving {
-    animation: panelFadeOut 0.14s ease forwards;
-  }
-  @keyframes panelFadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(-6px) scale(0.96); }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0)   scale(1);    }
-  }
-  @keyframes panelFadeOut {
-    from { opacity: 1; transform: translateX(-50%) translateY(0)   scale(1);    }
-    to   { opacity: 0; transform: translateX(-50%) translateY(-4px) scale(0.97); }
-  }
-
-  /* 面板内已选中状态 */
-  .tag-more-item.is-active {
-    color: rgb(39 39 42);
-    background: rgb(244 244 245 / 0.8);
-    font-weight: 800;
-  }
 </style>
 
 <script>
@@ -393,10 +322,7 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
     const sentinel = document.getElementById('bank-sentinel');
     const contentArea = document.getElementById('card-content-area');
     const filterButtons = document.querySelectorAll('.tag-filter-btn');
-    const moreBtn = document.getElementById('tag-more-btn');
-    const morePanel = document.getElementById('tag-more-panel');
-    const moreLabel = document.getElementById('tag-more-label');
-    const moreArrow = document.getElementById('tag-more-arrow');
+
 
     if (
       !card || !questionEl || !answerEl || !tagEl || !articleLinkEl || 
@@ -682,83 +608,25 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
       }
     }
 
-    // ---- 「更多 ▾」面板 交互 ----
-    let panelOpen = false;
-
-    function openMorePanel() {
-      if (!morePanel || panelOpen) return;
-      panelOpen = true;
-      morePanel.classList.remove('hidden', 'leaving');
-      morePanel.classList.add('entering');
-      moreBtn?.setAttribute('aria-expanded', 'true');
-      if (moreArrow) moreArrow.style.transform = 'rotate(180deg)';
-    }
-
-    function closeMorePanel() {
-      if (!morePanel || !panelOpen) return;
-      panelOpen = false;
-      morePanel.classList.remove('entering');
-      morePanel.classList.add('leaving');
-      moreBtn?.setAttribute('aria-expanded', 'false');
-      if (moreArrow) moreArrow.style.transform = '';
-      morePanel.addEventListener('animationend', () => {
-        if (!panelOpen) morePanel.classList.add('hidden');
-        morePanel.classList.remove('leaving');
-      }, { once: true });
-    }
-
-    const handleMoreBtn = (e: Event) => {
-      e.stopPropagation();
-      panelOpen ? closeMorePanel() : openMorePanel();
-    };
-
-    const handleOutsideClick = (e: Event) => {
-      const wrapper = document.querySelector('.tag-more-wrapper');
-      if (wrapper && !wrapper.contains(e.target as Node)) {
-        closeMorePanel();
-      }
-    };
-
-    moreBtn?.addEventListener('click', handleMoreBtn);
-    document.addEventListener('click', handleOutsideClick);
-
     // ---- 绑定 Tag 筛选事件 ----
     filterButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLButtonElement;
         const selectedTag = target.getAttribute('data-tag');
-        const isMoreItem = target.classList.contains('tag-more-item');
 
-        // 关闭面板（如果是面板内条目）
-        if (isMoreItem) closeMorePanel();
-
-        // 更新主导航按钮选中态
+        // 更新所有标签按钮选中态 (极简文本下划线高亮)
         filterButtons.forEach(b => {
-          b.classList.remove('text-zinc-900', 'border-zinc-900', 'is-active');
+          b.classList.remove('text-zinc-900', 'border-zinc-900');
           b.classList.add('text-zinc-400', 'border-transparent');
         });
-
-        if (isMoreItem) {
-          // 面板内条目选中：高亮面板内条目 + 「更多」按钮也高亮显示下划线
-          target.classList.add('is-active');
-          if (moreBtn) {
-            moreBtn.classList.remove('text-zinc-400', 'border-transparent');
-            moreBtn.classList.add('text-zinc-900', 'border-zinc-900');
-          }
-        } else {
-          // 主导航条目选中
-          target.classList.remove('text-zinc-400', 'border-transparent');
-          target.classList.add('text-zinc-900', 'border-zinc-900');
-          // 取消面板内任何高亮
-          if (moreBtn) {
-            moreBtn.classList.remove('text-zinc-900', 'border-zinc-900');
-            moreBtn.classList.add('text-zinc-400', 'border-transparent');
-          }
-        }
+        target.classList.remove('text-zinc-400', 'border-transparent');
+        target.classList.add('text-zinc-900', 'border-zinc-900');
 
         // 过滤数据
         if (selectedTag === 'all') {
           filteredFAQs = [...allFAQs];
+        } else if (selectedTag === '女性') {
+          filteredFAQs = allFAQs.filter((faq: any) => faq.tag && faq.tag.includes('女性'));
         } else {
           filteredFAQs = allFAQs.filter((faq: any) => faq.tag === selectedTag);
         }
@@ -825,8 +693,6 @@ const moreTags = tags.filter(t => !isPriorityTag(t));
       randomBtn.removeEventListener('click', handleRandom);
       enterFocusBtn.removeEventListener('click', handleEnterFocus);
       exitFocusBtn.removeEventListener('click', handleExitFocus);
-      moreBtn?.removeEventListener('click', handleMoreBtn);
-      document.removeEventListener('click', handleOutsideClick);
       if (observer) observer.disconnect();
       if (animFrameId) cancelAnimationFrame(animFrameId);
       document.body.classList.remove('focus-active');
