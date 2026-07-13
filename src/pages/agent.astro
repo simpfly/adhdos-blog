@@ -26,9 +26,9 @@ const openApiSchema = JSON.stringify({
   }
 }, null, 2);
 
-const agentPrompt = "请先检查并安装 ADHD OS 知识库 Skill：https://blog.adhdos.app/adhdos-skill/ 要求： 1. 先读取并检查 SKILL.md、README.md，确认只访问 ADHD OS 的公开只读接口； 2. 告诉我你准备写入的目录和文件，不要使用 sudo，不要覆盖其它 Skill； 3. 安装到你当前 Agent 官方支持的用户级 skills 目录； 4. 安装完成后告诉我是否需要重启或开启新会话，并给出一个验证问题。";
+const agentPrompt = "请检查并安装 ADHD OS 知识库 Skill。新版的规则文件为：https://blog.adhdos.app/adhdos-skill/SKILL.md 说明文件为：https://blog.adhdos.app/adhdos-skill/README.md 要求： 1. 先读取这两个文件的内容，确认仅访问公开只读接口； 2. 告诉我你准备写入的用户级 skills 目录及文件名，不使用 sudo，不覆盖其他无关 Skill； 3. 写入文件完成安装； 4. 告诉我是否需要重启或新会话，并提供一个验证问题。";
 
-const updatePrompt = "请更新当前已安装的 ADHD OS Skill：https://blog.adhdos.app/adhdos-skill/ 先找到当前会话实际加载的 adhdos-kb/SKILL.md 路径，告诉我旧版本 and 目标路径；确认后覆盖同一目录。不要把更新写到其它 Agent 的目录。";
+const updatePrompt = "请更新当前已安装的 ADHD OS Skill。新版规则文件为：https://blog.adhdos.app/adhdos-skill/SKILL.md 说明文件为：https://blog.adhdos.app/adhdos-skill/README.md 先找到你当前会话实际加载的 adhdos-kb/SKILL.md 路径，确认旧版本内容与目标路径，下载新文件覆盖同一目录。不要写到其他 Agent 目录。";
 ---
 
 <BaseLayout title={title} description={description} lang="zh">
@@ -301,7 +301,7 @@ const updatePrompt = "请更新当前已安装的 ADHD OS Skill：https://blog.a
           }
           
           btn.classList.add('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
+          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
           
           setTimeout(() => {
             if (copyIcon && checkIcon) {
@@ -309,7 +309,7 @@ const updatePrompt = "请更新当前已安装的 ADHD OS Skill：https://blog.a
               checkIcon.classList.add('hidden');
             }
             btn.classList.remove('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
+            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
           }, 1500);
         } catch (err) {
           console.error('复制失败', err);

@@ -26,9 +26,9 @@ const openApiSchema = JSON.stringify({
   }
 }, null, 2);
 
-const agentPrompt = "Please check and install the ADHD OS Knowledge Base Skill: https://blog.adhdos.app/adhdos-skill/ Requirements: 1. Read and review SKILL.md and README.md first to ensure it only accesses the public read-only API of ADHD OS; 2. Tell me the directory and files you plan to write, do not use sudo, and do not overwrite other Skills; 3. Install to the user-level skills directory officially supported by your current Agent; 4. After installation, let me know if a restart or a new session is needed, and provide a verification question.";
+const agentPrompt = "Please check and install the ADHD OS Knowledge Base Skill. The rules file is at: https://blog.adhdos.app/adhdos-skill/SKILL.md and the readme is at: https://blog.adhdos.app/adhdos-skill/README.md Requirements: 1. Read the contents of both files first to ensure it only accesses the public read-only API; 2. Tell me the user-level skills directory and file name you plan to write, do not use sudo, and do not overwrite other Skills; 3. Write files to complete installation; 4. Let me know if a restart or new session is needed, and provide a verification question.";
 
-const updatePrompt = "Please update the currently installed ADHD OS Skill: https://blog.adhdos.app/adhdos-skill/ Locate the path of the loaded adhdos-kb/SKILL.md file in the current session first, let me know the old version and target path, and then overwrite it. Do not write updates to other Agents' directories.";
+const updatePrompt = "Please update the currently installed ADHD OS Skill. The new rules file is at: https://blog.adhdos.app/adhdos-skill/SKILL.md and the readme is at: https://blog.adhdos.app/adhdos-skill/README.md Locate the path of the loaded adhdos-kb/SKILL.md file in the current session first, confirm the old version and target path, download the new files and overwrite them. Do not write updates to other Agents' directories.";
 ---
 
 <BaseLayout title={title} description={description} lang="en">
@@ -301,7 +301,7 @@ const updatePrompt = "Please update the currently installed ADHD OS Skill: https
           }
           
           btn.classList.add('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
+          btn.classList.remove('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
           
           setTimeout(() => {
             if (copyIcon && checkIcon) {
@@ -309,7 +309,7 @@ const updatePrompt = "Please update the currently installed ADHD OS Skill: https
               checkIcon.classList.add('hidden');
             }
             btn.classList.remove('bg-violet/10', 'border-violet/30', 'text-violet-dark');
-            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-500', 'hover:text-zinc-700', 'border-zinc-200');
+            btn.classList.add('bg-white', 'hover:bg-zinc-50', 'text-zinc-700', 'border-zinc-200');
           }, 1500);
         } catch (err) {
           console.error('Copy failed', err);
