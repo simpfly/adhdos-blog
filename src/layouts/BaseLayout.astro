@@ -4,9 +4,9 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { getLangFromUrl } from '../i18n/utils';
 
-// 站点配置：与 astro.config.mjs 的 SITE 保持一致
-const SITE = 'https://blog.adhdos.app';
-// 静态品牌资源（icon / OG fallback）托管在主站 adhdos.app，非 blog 子域
+// 站点配置：与主站一致，子路径挂载在 /blog
+const SITE = Astro.site ? Astro.site.origin : 'https://adhdos.app';
+// 静态品牌资源（icon / OG fallback）托管在主站 adhdos.app
 const BRAND_ASSETS = 'https://adhdos.app';
 
 interface ArticleMeta {
@@ -38,6 +38,14 @@ const ogImage = article?.heroImage
   ? new URL(article.heroImage, SITE).href
   : `${BRAND_ASSETS}/assets/icon_ADHDOS.png`; // 站点级 fallback（主站品牌资源）
 const canonicalURL = new URL(Astro.url.pathname, SITE).href;
+
+// 多语言对应关系（hreflang）
+const currentPath = Astro.url.pathname;
+const isEnPage = currentPath.startsWith('/blog/en');
+const zhPath = isEnPage ? currentPath.replace(/^\/blog\/en/, '/blog') || '/blog' : currentPath;
+const enPath = isEnPage ? currentPath : currentPath.replace(/^\/blog/, '/blog/en');
+const zhCanonical = new URL(zhPath, SITE).href;
+const enCanonical = new URL(enPath, SITE).href;
 
 // Article JSON-LD（仅文章页生成）
 const publisherId = `${BRAND_ASSETS}/#organization`;
@@ -82,6 +90,9 @@ const articleSchema = article
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" hreflang="zh-CN" href={zhCanonical} />
+    <link rel="alternate" hreflang="en-US" href={enCanonical} />
+    <link rel="alternate" hreflang="x-default" href={zhCanonical} />
 
     <!-- Open Graph -->
     <meta property="og:type" content={article ? 'article' : 'website'} />

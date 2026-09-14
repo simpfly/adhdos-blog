@@ -23,7 +23,7 @@ export async function GET() {
   txt += `# CHINESE ARTICLES (zh)\n\n`;
   for (const post of zhPosts) {
     const slug = getSlug(post.id);
-    const url = `https://blog.adhdos.app/${slug}`;
+    const url = `https://adhdos.app/blog/${slug}`;
     txt += `## [ZH] [${post.data.title}](${url})\n`;
     txt += `- Published: ${post.data.pubDate.toISOString().split('T')[0]}\n`;
     if (post.data.tags && post.data.tags.length > 0) {
@@ -38,7 +38,7 @@ export async function GET() {
   txt += `# ENGLISH ARTICLES (en)\n\n`;
   for (const post of enPosts) {
     const slug = getSlug(post.id);
-    const url = `https://blog.adhdos.app/en/${slug}`;
+    const url = `https://adhdos.app/blog/en/${slug}`;
     txt += `## [EN] [${post.data.title}](${url})\n`;
     txt += `- Published: ${post.data.pubDate.toISOString().split('T')[0]}\n`;
     if (post.data.tags && post.data.tags.length > 0) {

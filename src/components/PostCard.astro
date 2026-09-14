@@ -11,7 +11,7 @@ const { title, description, pubDate, tags, heroImage } = post.data;
 
 const [lang, ...slugParts] = post.id.split('/');
 const slug = slugParts.join('/');
-const href = lang === 'zh' ? `/${slug}/` : `/${lang}/${slug}/`;
+const href = lang === 'zh' ? `/blog/${slug}/` : `/blog/${lang}/${slug}/`;
 const locale = lang === 'en' ? 'en-US' : 'zh-CN';
 const heroImageAlt = `${title}${lang === 'en' ? ' — cover image' : ' · 封面图'}`;
 ---

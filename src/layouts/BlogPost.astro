@@ -31,7 +31,7 @@ const heroImageAlt = lang === 'en' ? `Cover image for: ${title}` : `${title} · 
 const t = useTranslations(lang);
 const isEn = lang === 'en';
 const locale = isEn ? 'en-US' : 'zh-CN';
-const backUrl = isEn ? '/en' : '/';
+const backUrl = isEn ? '/blog/en' : '/blog';
 
 const getReadingTime = (body: string | undefined, lang: 'zh' | 'en') => {
   if (!body) return '';
@@ -150,7 +150,7 @@ const recommendedPosts = otherPosts
               {recommendedPosts.map((p) => {
                 const [pLang, ...pSlugParts] = p.id.split('/');
                 const pSlug = pSlugParts.join('/');
-                const postUrl = pLang === 'zh' ? `/${pSlug}/` : `/${pLang}/${pSlug}/`;
+                const postUrl = pLang === 'zh' ? `/blog/${pSlug}/` : `/blog/${pLang}/${pSlug}/`;
                 return (
                   <a href={postUrl} class="group block p-5 rounded-2xl border border-black/5 hover:border-black/10 hover:bg-black/[0.01] transition-all duration-200">
                     <div class="flex flex-col gap-2">

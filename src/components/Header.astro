@@ -4,23 +4,29 @@ import { getLangFromUrl, useTranslations } from '../i18n/utils';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-// simple pathname switcher for dev and prod
+// 路径与多语言链接适配 /blog base
 const pathname = Astro.url.pathname;
 const isEn = lang === 'en';
 
-let zhUrl = pathname;
-let enUrl = pathname;
+let zhUrl = '/blog';
+let enUrl = '/blog/en';
 
 if (isEn) {
-  zhUrl = pathname.replace(/^\/en/, '') || '/';
+  zhUrl = pathname.replace(/^\/blog\/en/, '/blog') || '/blog';
+  enUrl = pathname;
 } else {
-  enUrl = `/en${pathname === '/' ? '' : pathname}`;
+  zhUrl = pathname;
+  enUrl = pathname.replace(/^\/blog/, '/blog/en');
 }
+
+const blogHome = isEn ? '/blog/en' : '/blog';
+const flashcardsUrl = isEn ? '/blog/en/card' : '/blog/card';
+const agentUrl = isEn ? '/blog/en/agent' : '/blog/agent';
 ---
 <header class="focus-hide fixed top-0 left-0 w-full z-50 border-b border-black/5 bg-white/70 backdrop-blur-xl">
   <div class="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between max-w-7xl">
     <a href="https://adhdos.app/product" class="text-2xl font-black tracking-tighter flex items-center gap-2 text-black hover:opacity-80 transition-opacity">
-      <img src="/icon_ADHDOS.png" alt="Logo" class="w-8 h-8 rounded-lg shadow-sm" />
+      <img src="https://adhdos.app/assets/icon_ADHDOS.png" alt="Logo" class="w-8 h-8 rounded-lg shadow-sm" />
       ADHD OS
     </a>
     
@@ -34,9 +40,9 @@ if (isEn) {
       <!-- 桌面端导航链接 -->
       <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.about')}</a>
       <a href="https://adhdos.app/product#pricing" target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.pricing')}</a>
-      <a href={isEn ? "/en" : "/"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.blog')}</a>
-      <a href={isEn ? "/en/card" : "/card"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.flashcards')}</a>
-      <a href={isEn ? "/en/agent" : "/agent"} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.agent')}</a>
+      <a href={blogHome} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.blog')}</a>
+      <a href={flashcardsUrl} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.flashcards')}</a>
+      <a href={agentUrl} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.agent')}</a>
       
       <!-- 下载按钮：仅在桌面端显示，移动端将其移入导航菜单中 -->
       <a href="https://flowus.cn/curiosita/share/64846477-cbbc-45a3-97c2-2f7c3a7bef61?code=QRZXP8" target="_blank" rel="noopener noreferrer" class="hidden md:flex bg-black text-white text-sm font-bold py-2 px-5 rounded-full hover:bg-zinc-800 transition-colors shadow-lg items-center gap-2">
@@ -70,15 +76,15 @@ if (isEn) {
         <span>{t('nav.pricing')}</span>
         <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
-      <a href={isEn ? "/en" : "/"} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+      <a href={blogHome} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
         <span>{t('nav.blog')}</span>
         <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
-      <a href={isEn ? "/en/card" : "/card"} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+      <a href={flashcardsUrl} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
         <span>{t('nav.flashcards')}</span>
         <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
-      <a href={isEn ? "/en/agent" : "/agent"} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+      <a href={agentUrl} class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
         <span>{t('nav.agent')}</span>
         <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>

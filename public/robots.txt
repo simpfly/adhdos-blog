@@ -21,4 +21,4 @@ User-agent: Bingbot
 Allow: /
 
 # ADHD OS Blog — 神经多样性内容站，欢迎搜索引擎与 AI 引擎抓取
-Sitemap: https://blog.adhdos.app/sitemap-index.xml
+Sitemap: https://adhdos.app/blog/sitemap-index.xml
