@@ -7,7 +7,7 @@ const description = '将 ADHD OS 知识库一键接入您的 AI 助手，无需 
 const openApiSchema = JSON.stringify({
   "openapi": "3.1.0",
   "info": { "title": "ADHD OS Blog Knowledge Base API", "version": "1.0.0" },
-  "servers": [{ "url": "https://blog.adhdos.app" }],
+  "servers": [{ "url": "https://adhdos.app/blog" }],
   "paths": {
     "/api/knowledge.json": {
       "get": {
@@ -21,8 +21,8 @@ const openApiSchema = JSON.stringify({
 
 const agentPrompt = `请检查并安装 ADHD OS 知识库 Skill。
 
-规则文件：https://blog.adhdos.app/adhdos-skill/SKILL.md
-说明文件：https://blog.adhdos.app/adhdos-skill/README.md
+规则文件：https://adhdos.app/blog/adhdos-skill/SKILL.md
+说明文件：https://adhdos.app/blog/adhdos-skill/README.md
 
 要求：
 1. 先读取并检查这两个文件，确认仅访问公开只读接口；
@@ -32,8 +32,8 @@ const agentPrompt = `请检查并安装 ADHD OS 知识库 Skill。
 
 const updatePrompt = `请更新当前已安装的 ADHD OS Skill。
 
-新版规则文件：https://blog.adhdos.app/adhdos-skill/SKILL.md
-新版说明文件：https://blog.adhdos.app/adhdos-skill/README.md
+新版规则文件：https://adhdos.app/blog/adhdos-skill/SKILL.md
+新版说明文件：https://adhdos.app/blog/adhdos-skill/README.md
 
 步骤：
 1. 先找到你当前会话实际加载的 adhdos-kb/SKILL.md 路径；
@@ -102,7 +102,7 @@ const updatePrompt = `请更新当前已安装的 ADHD OS Skill。
               <li><strong>身体双倍（Body Doubling）</strong>：寻找同伴或在直播间工作，借用外部场域提供多巴胺。</li>
               <li><strong>拆解至微小行动</strong>：将大任务拆分为 <strong>3 分钟内即可完成的微行动</strong>，消除对任务体积的恐惧。</li>
             </ul>
-            <p class="text-[10px] text-zinc-500 pt-1">来源：[《ADHD 任务瘫痪 SOS 自救指南》](https://blog.adhdos.app/adhd-task-paralysis-sos)</p>
+            <p class="text-[10px] text-zinc-500 pt-1">来源：[《ADHD 任务瘫痪 SOS 自救指南》](https://adhdos.app/blog/adhd-task-paralysis-sos)</p>
             <p class="text-[10px] text-violet-dark italic">(优势：排白舒适、核心动作加粗以利视觉扫描、提供具体的科学策略、去 AI 腔调、透明溯源)</p>
           </div>
         </div>
@@ -125,7 +125,7 @@ const updatePrompt = `请更新当前已安装的 ADHD OS Skill。
           <svg width="14" height="14" class="check-icon hidden"><use href="#icon-check"/></svg>
         </button>
       </div>
-      <a href="/adhdos-skill/SKILL.md" target="_blank" class="text-xs font-semibold text-violet-dark hover:underline">查看 SKILL.md 规则定义</a>
+      <a href="/blog/adhdos-skill/SKILL.md" target="_blank" class="text-xs font-semibold text-violet-dark hover:underline">查看 SKILL.md 规则定义</a>
     </div>
 
     <!-- 方案二 -->
@@ -146,9 +146,9 @@ const updatePrompt = `请更新当前已安装的 ADHD OS Skill。
           <div>
             <span class="text-[11px] font-bold text-zinc-400 block mb-1">{label}</span>
             <div class="group bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs p-4 rounded-xl font-mono flex items-center justify-between gap-4">
-              <span class="overflow-x-auto whitespace-nowrap text-[11px] pr-2">bash &lt;(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target {target}</span>
+              <span class="overflow-x-auto whitespace-nowrap text-[11px] pr-2">bash &lt;(curl -fsSL https://adhdos.app/blog/install-skill.sh) --target {target}</span>
               <button class="copy-btn shrink-0 p-1.5 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-700 rounded-lg border border-zinc-200 active:scale-95 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center"
-                data-copy={`bash <(curl -fsSL https://blog.adhdos.app/install-skill.sh) --target ${target}`} title="复制命令">
+                data-copy={`bash <(curl -fsSL https://adhdos.app/blog/install-skill.sh) --target ${target}`} title="复制命令">
                 <svg width="14" height="14" class="copy-icon"><use href="#icon-copy"/></svg>
                 <svg width="14" height="14" class="check-icon hidden"><use href="#icon-check"/></svg>
               </button>
@@ -169,9 +169,9 @@ const updatePrompt = `请更新当前已安装的 ADHD OS Skill。
       </p>
       <div class="space-y-3">
         {[
-          { name: '全站索引地图 (llms.txt)', desc: '列出博客简介、中英文分类和所有文章的大纲及描述', href: '/llms.txt', url: 'https://blog.adhdos.app/llms.txt' },
-          { name: '全量 Markdown 打包 (llms-full.txt)', desc: '将全站所有文章的原始 Markdown 全文拼接为一个包，方便直接注入上下文', href: '/llms-full.txt', url: 'https://blog.adhdos.app/llms-full.txt' },
-          { name: 'JSON 知识库 API (knowledge.json)', desc: '返回包含文章标题、摘要、中英文标签和 Markdown 原文的强类型 JSON 数组', href: '/api/knowledge.json', url: 'https://blog.adhdos.app/api/knowledge.json' },
+          { name: '全站索引地图 (llms.txt)', desc: '列出博客简介、中英文分类和所有文章的大纲及描述', href: '/blog/llms.txt', url: 'https://adhdos.app/blog/llms.txt' },
+          { name: '全量 Markdown 打包 (llms-full.txt)', desc: '将全站所有文章的原始 Markdown 全文拼接为一个包，方便直接注入上下文', href: '/blog/llms-full.txt', url: 'https://adhdos.app/blog/llms-full.txt' },
+          { name: 'JSON 知识库 API (knowledge.json)', desc: '返回包含文章标题、摘要、中英文标签和 Markdown 原文的强类型 JSON 数组', href: '/blog/api/knowledge.json', url: 'https://adhdos.app/blog/api/knowledge.json' },
         ].map(({ name, desc, href, url }, i) => (
           <div class={`group flex justify-between items-center text-xs ${i < 2 ? 'border-b border-black/5 pb-3' : ''}`}>
             <div class="pr-4">

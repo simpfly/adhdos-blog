@@ -16,7 +16,7 @@ export async function GET() {
   const knowledge = sortedPosts.map(post => {
     const isEn = post.id.startsWith('en/');
     const slug = getSlug(post.id);
-    const url = isEn ? `https://blog.adhdos.app/en/${slug}` : `https://blog.adhdos.app/${slug}`;
+    const url = isEn ? `https://adhdos.app/blog/en/${slug}` : `https://adhdos.app/blog/${slug}`;
     
     return {
       title: post.data.title,

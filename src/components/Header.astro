@@ -38,8 +38,8 @@ const agentUrl = isEn ? '/blog/en/agent' : '/blog/agent';
       </div>
 
       <!-- 桌面端导航链接 -->
-      <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.about')}</a>
-      <a href="https://adhdos.app/product#pricing" target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.pricing')}</a>
+      <a href="https://adhdos.app/about" target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.about')}</a>
+      <a href="https://adhdos.app/pricing" target="_blank" rel="noopener noreferrer" class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.pricing')}</a>
       <a href={blogHome} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.blog')}</a>
       <a href={flashcardsUrl} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.flashcards')}</a>
       <a href={agentUrl} class="hidden md:block text-sm font-bold text-zinc-500 hover:text-black transition-colors">{t('nav.agent')}</a>
@@ -68,11 +68,11 @@ const agentUrl = isEn ? '/blog/en/agent' : '/blog/agent';
   <!-- 移动端展开式菜单面板 -->
   <div id="mobile-menu" class="hidden fixed top-16 left-0 w-full h-[calc(100vh-4rem)] bg-white/95 backdrop-blur-xl z-40 flex flex-col justify-between p-6 border-t border-black/5 overflow-y-auto transition-all duration-200">
     <div class="flex flex-col gap-1">
-      <a href={isEn ? "https://adhdos.app/en/about" : "https://adhdos.app/about"} target="_blank" rel="noopener noreferrer" class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+      <a href="https://adhdos.app/about" target="_blank" rel="noopener noreferrer" class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
         <span>{t('nav.about')}</span>
         <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
-      <a href="https://adhdos.app/product#pricing" target="_blank" rel="noopener noreferrer" class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
+      <a href="https://adhdos.app/pricing" target="_blank" rel="noopener noreferrer" class="text-xl font-bold py-4 text-zinc-800 hover:text-black border-b border-black/5 flex items-center justify-between">
         <span>{t('nav.pricing')}</span>
         <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>

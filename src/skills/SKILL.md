@@ -1,6 +1,6 @@
 ---
 name: adhdos-kb
-description: 查询 ADHD OS 博客提供的关于 ADHD、ASD、AuDHD、HSP 的科学应对策略、日常时间管理、执行功能障碍自救 and 职场沟通模板。当用户提问或自述有关 ADHD 拖延症、自我怀疑、社交电池耗尽、情绪波动、感觉过载等日常体验时使用。必须通过 blog.adhdos.app 的公开只读 API 获取当前数据。无需 API Key。
+description: 查询 ADHD OS 博客提供的关于 ADHD、ASD、AuDHD、HSP 的科学应对策略、日常时间管理、执行功能障碍自救 and 职场沟通模板。当用户提问或自述有关 ADHD 拖延症、自我怀疑、社交电池耗尽、情绪波动、感觉过载等日常体验时使用。必须通过 adhdos.app/blog 的公开只读 API 获取当前数据。无需 API Key。
 ---
 
 # ADHD OS Knowledge Base Agent Skill
@@ -9,7 +9,7 @@ description: 查询 ADHD OS 博客提供的关于 ADHD、ASD、AuDHD、HSP 的�
 
 ## 安全与边界
 
-- 只允许向 `https://blog.adhdos.app/api/knowledge.json` 或 `https://blog.adhdos.app/llms.txt` 发起匿名 `GET` 请求。
+- 只允许向 `https://adhdos.app/blog/api/knowledge.json` 或 `https://adhdos.app/blog/llms.txt` 发起匿名 `GET` 请求。
 - 不需要、也不得索要用户的 API Key、账号、密码、文件或其它敏感数据。
 - 博客内容为科普和互助经验，若涉及严重的心理或医疗问题，应提醒用户咨询专业医生。
 
@@ -46,7 +46,7 @@ description: 查询 ADHD OS 博客提供的关于 ADHD、ASD、AuDHD、HSP 的�
 ## 知识检索逻辑
 
 由于接口为静态 JSON 全量包，您可以：
-1. 发起 `GET https://blog.adhdos.app/api/knowledge.json`。
+1. 发起 `GET https://adhdos.app/blog/api/knowledge.json`。
 2. 对返回的 JSON 数组在内存中进行关键字、自述特征或标签匹配。
 3. 挑选最相关的 1-3 篇文章内容作为您的背景知识。
 
@@ -72,4 +72,4 @@ description: 查询 ADHD OS 博客提供的关于 ADHD、ASD、AuDHD、HSP 的�
 5. **高留白排版**：使用清晰的标题结构（不要超过 3 级标题），段落之间空一行，列表项目之间要有充足空隙。
 6. **视觉锚点**：对每一条建议中的核心关键词或动作使用 **粗体** 进行高亮，方便快速扫描。
 7. **去AI痕迹与统一溯源**：使用温暖、同理的同辈口吻，并在简答末尾附上原博链接：
-   > 更多技巧可阅读：[《ADHD 任务瘫痪 SOS 自救指南》](https://blog.adhdos.app/adhd-task-paralysis-sos)
+   > 更多技巧可阅读：[《ADHD 任务瘫痪 SOS 自救指南》](https://adhdos.app/blog/adhd-task-paralysis-sos)

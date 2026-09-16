@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # ADHD OS Blog Agent Skill Installer.
-# Downloads SKILL.md + README.md from https://blog.adhdos.app.
+# Downloads SKILL.md + README.md from https://adhdos.app/blog.
 
 set -euo pipefail
 
-SITE="https://blog.adhdos.app"
+SITE="https://adhdos.app/blog"
 TARGET=""
 INSTALL_DIR="${SKILL_DIR:-}"
 

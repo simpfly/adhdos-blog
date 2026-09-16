@@ -1,11 +1,11 @@
 {
   "name": "ADHD OS Blog Knowledge Base",
   "description": "Evidence-based guides, practical strategies, and personal stories designed for ADHD, ASD, AuDHD, and HSP individuals to navigate their lives and workplaces.",
-  "url": "https://blog.adhdos.app",
+  "url": "https://adhdos.app/blog",
   "endpoints": {
-    "llms_index": "https://blog.adhdos.app/llms.txt",
-    "llms_full": "https://blog.adhdos.app/llms-full.txt",
-    "json_knowledge": "https://blog.adhdos.app/api/knowledge.json"
+    "llms_index": "https://adhdos.app/blog/llms.txt",
+    "llms_full": "https://adhdos.app/blog/llms-full.txt",
+    "json_knowledge": "https://adhdos.app/blog/api/knowledge.json"
   },
   "supported_agents": [
     "Codex",
