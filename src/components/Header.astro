@@ -5,23 +5,23 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 // 路径与多语言链接适配 /blog base
-const pathname = Astro.url.pathname;
+const pathname = `${Astro.url.pathname.replace(/\/+$/, '')}/`;
 const isEn = lang === 'en';
 
-let zhUrl = '/blog';
-let enUrl = '/blog/en';
+let zhUrl = '/blog/';
+let enUrl = '/blog/en/';
 
 if (isEn) {
-  zhUrl = pathname.replace(/^\/blog\/en/, '/blog') || '/blog';
+  zhUrl = pathname.replace(/^\/blog\/en/, '/blog') || '/blog/';
   enUrl = pathname;
 } else {
   zhUrl = pathname;
   enUrl = pathname.replace(/^\/blog/, '/blog/en');
 }
 
-const blogHome = isEn ? '/blog/en' : '/blog';
-const flashcardsUrl = isEn ? '/blog/en/card' : '/blog/card';
-const agentUrl = isEn ? '/blog/en/agent' : '/blog/agent';
+const blogHome = isEn ? '/blog/en/' : '/blog/';
+const flashcardsUrl = isEn ? '/blog/en/card/' : '/blog/card/';
+const agentUrl = isEn ? '/blog/en/agent/' : '/blog/agent/';
 ---
 <header class="focus-hide fixed top-0 left-0 w-full z-50 border-b border-black/5 bg-white/70 backdrop-blur-xl">
   <div class="container mx-auto px-4 md:px-6 h-16 md:h-20 flex items-center justify-between max-w-7xl">

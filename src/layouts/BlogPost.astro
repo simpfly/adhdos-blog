@@ -31,7 +31,7 @@ const heroImageAlt = lang === 'en' ? `Cover image for: ${title}` : `${title} · 
 const t = useTranslations(lang);
 const isEn = lang === 'en';
 const locale = isEn ? 'en-US' : 'zh-CN';
-const backUrl = isEn ? '/blog/en' : '/blog';
+const backUrl = isEn ? '/blog/en/' : '/blog/';
 
 const getReadingTime = (body: string | undefined, lang: 'zh' | 'en') => {
   if (!body) return '';

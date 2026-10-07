@@ -9,7 +9,7 @@ const isEn = lang === 'en';
     <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 mb-8 text-sm font-medium text-zinc-500">
       <a href="https://adhdos.app/about" class="hover:text-zinc-900 transition-colors">{isEn ? 'About' : '关于'}</a>
       <a href="https://adhdos.app/pricing" class="hover:text-zinc-900 transition-colors">{isEn ? 'Pricing' : '定价'}</a>
-      <a href={isEn ? '/blog/en' : '/blog'} class="hover:text-zinc-900 transition-colors">{isEn ? 'Blog' : '博客'}</a>
+      <a href={isEn ? '/blog/en/' : '/blog/'} class="hover:text-zinc-900 transition-colors">{isEn ? 'Blog' : '博客'}</a>
       <a href={isEn ? '/blog/en/card' : '/blog/card'} class="hover:text-zinc-900 transition-colors">{isEn ? 'Flashcards' : '闪卡'}</a>
       <a href={isEn ? '/blog/en/agent' : '/blog/agent'} class="hover:text-zinc-900 transition-colors">{isEn ? 'AI & Agent' : 'Agent 接入'}</a>
       <a href="https://adhdos.app/privacy" class="hover:text-zinc-900 transition-colors">{isEn ? 'Privacy Policy' : '隐私政策'}</a>

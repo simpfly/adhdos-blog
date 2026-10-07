@@ -37,11 +37,12 @@ const ogDescription = article?.description ?? description;
 const ogImage = article?.heroImage
   ? new URL(article.heroImage, SITE).href
   : `${BRAND_ASSETS}/assets/icon_ADHDOS.png`; // 站点级 fallback（主站品牌资源）
-const canonicalURL = new URL(Astro.url.pathname, SITE).href;
+// HTML 页面统一使用 sitemap 中的尾斜杠形式。
+const currentPath = `${Astro.url.pathname.replace(/\/+$/, '')}/`;
+const canonicalURL = new URL(currentPath, SITE).href;
 
 // 多语言对应关系（hreflang）
-const currentPath = Astro.url.pathname;
-const isEnPage = currentPath.startsWith('/blog/en');
+const isEnPage = currentPath.startsWith('/blog/en/');
 const zhPath = isEnPage ? currentPath.replace(/^\/blog\/en/, '/blog') || '/blog' : currentPath;
 const enPath = isEnPage ? currentPath : currentPath.replace(/^\/blog/, '/blog/en');
 const zhCanonical = new URL(zhPath, SITE).href;
