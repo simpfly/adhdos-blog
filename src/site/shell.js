@@ -22,7 +22,7 @@ const external = {
   contact: 'mailto:roamzen@proton.me',
 };
 const escape = (value) => String(value).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
-export function renderShell({ part = 'header', lang = 'zh-CN', blog = false, pathname = '/product', zhUrl = '/blog/', enUrl = '/blog/en/' } = {}) {
+export function renderShell({ part = 'header', lang = 'zh-CN', blog = false, pathname = '/product', zhUrl = '/blog', enUrl = '/blog/en' } = {}) {
   const t = labels[lang] || labels['zh-CN'];
   const prefix = blog ? 'https://adhdos.app' : '';
   const blogBase = lang === 'en' ? '/blog/en' : '/blog';

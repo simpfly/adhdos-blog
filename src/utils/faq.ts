@@ -1,3 +1,4 @@
+import { blogPath } from './urls.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -53,7 +54,7 @@ function parseFAQs(content: string, isZh: boolean, slug: string, defaultTag: str
   const faqs: FAQItem[] = [];
   const { title, tags, pubDate } = parseFrontmatter(content);
   const tag = tags[0] || defaultTag;
-  const href = isZh ? `/blog/${slug}/` : `/blog/${lang}/${slug}/`;
+  const href = blogPath(slug, lang);
   
   // 1. 优先提取 FAQSchema
   const schemaRegex = /<FAQSchema\s+questions=\{\[\s*([\s\S]*?)\s*\]\}\s*\/>/;

@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import { normalizePath } from './src/utils/urls.js';
 import tailwindcss from '@tailwindcss/vite';
 
 // 部署在 adhdos.app/blog（通过 Vercel Rewrites 反代接入）
@@ -12,7 +13,7 @@ const SITE = 'https://adhdos.app';
 export default defineConfig({
   site: SITE,
   base: '/blog',
-  trailingSlash: 'ignore',
+  trailingSlash: 'never',
   i18n: {
     defaultLocale: 'zh',
     locales: ['zh', 'en'],
@@ -23,6 +24,12 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
+      // The sitemap integration retains a slash on the default-locale home link.
+      serialize(item) {
+        item.url = normalizePath(item.url);
+        item.links = item.links?.map(link => ({ ...link, url: normalizePath(link.url) }));
+        return item;
+      },
       i18n: {
         defaultLocale: 'zh',
         locales: { zh: 'zh-CN', en: 'en-US' },

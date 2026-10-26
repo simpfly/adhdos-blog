@@ -1,4 +1,5 @@
 ---
+import { normalizePath, languagePaths } from '../utils/urls.js';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
@@ -37,14 +38,10 @@ const ogDescription = article?.description ?? description;
 const ogImage = article?.heroImage
   ? new URL(article.heroImage, SITE).href
   : `${BRAND_ASSETS}/assets/icon_ADHDOS.png`; // 站点级 fallback（主站品牌资源）
-// HTML 页面统一使用 sitemap 中的尾斜杠形式。
-const currentPath = `${Astro.url.pathname.replace(/\/+$/, '')}/`;
+// Match the final URLs served by the main site's existing routing.
+const currentPath = normalizePath(Astro.url.pathname);
 const canonicalURL = new URL(currentPath, SITE).href;
-
-// 多语言对应关系（hreflang）
-const isEnPage = currentPath.startsWith('/blog/en/');
-const zhPath = isEnPage ? currentPath.replace(/^\/blog\/en/, '/blog') || '/blog' : currentPath;
-const enPath = isEnPage ? currentPath : currentPath.replace(/^\/blog/, '/blog/en');
+const { zh: zhPath, en: enPath } = languagePaths(currentPath);
 const zhCanonical = new URL(zhPath, SITE).href;
 const enCanonical = new URL(enPath, SITE).href;
 

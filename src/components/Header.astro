@@ -1,10 +1,10 @@
 ---
+import { normalizePath, languagePaths } from '../utils/urls.js';
 import { getLangFromUrl } from '../i18n/utils';
 import { renderShell } from '../site/shell.js';
 const lang = getLangFromUrl(Astro.url) === 'en' ? 'en' : 'zh-CN';
-const pathname = Astro.url.pathname;
-const zhUrl = pathname.replace(/^\/blog\/en(?=\/|$)/, '/blog');
-const enUrl = lang === 'en' ? pathname : pathname.replace(/^\/blog/, '/blog/en');
+const pathname = normalizePath(Astro.url.pathname);
+const { zh: zhUrl, en: enUrl } = languagePaths(pathname);
 const html = renderShell({ part: 'header', lang, blog: true, pathname, zhUrl, enUrl });
 ---
 <Fragment set:html={html} />
